@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "226694258438",
+    "project_id": "medilink-dd7ad",
+    "storage_bucket": "medilink-dd7ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226694258438:android:6ab758577a7201d11cc887",
+        "android_client_info": {
+          "package_name": "com.health.medilink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "226694258438-lm39dcht0r3hdp2vdmfv6a2pulip9ns6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.health.medilink",
+            "certificate_hash": "959a17578501ed219480b0fe49bdb90aa1a66491"
+          }
+        },
+        {
+          "client_id": "226694258438-jpvqhs93t0c37usimui7shtp3rb5be7p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Lu7o_fsWnRRldcGWwSGHdgdtxdaYqLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "226694258438-jpvqhs93t0c37usimui7shtp3rb5be7p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
