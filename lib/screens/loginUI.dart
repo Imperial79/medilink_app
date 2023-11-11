@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/dashboardUI.dart';
+import 'package:medilink/services/auth.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
@@ -124,7 +125,7 @@ class _LoginUIState extends State<LoginUI> {
                         child: Divider(
                       endIndent: 10,
                     )),
-                    Text('or Continue with'),
+                    Text('or continue with'),
                     Flexible(
                         child: Divider(
                       indent: 10,
@@ -133,7 +134,9 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 height20,
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await AuthMethods.signInWithgoogle(context);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
