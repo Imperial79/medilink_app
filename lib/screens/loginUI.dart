@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/dashboardUI.dart';
@@ -17,8 +19,19 @@ class LoginUI extends StatefulWidget {
 }
 
 class _LoginUIState extends State<LoginUI> {
-  // bool isVisible = false;
-  // bool _showPassword = true;
+  bool isLoading = false;
+
+  Future<void> _loginUsingGoogle() async {
+    try {
+      setState(() => isLoading = true);
+      await AuthMethods.signInWithgoogle(context);
+      setState(() => isLoading = false);
+    } catch (e) {
+      log(e.toString());
+      setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,7 +148,7 @@ class _LoginUIState extends State<LoginUI> {
                 height20,
                 ElevatedButton(
                   onPressed: () async {
-                    await AuthMethods.signInWithgoogle(context);
+                    await _loginUsingGoogle();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

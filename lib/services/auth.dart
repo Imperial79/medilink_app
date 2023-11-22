@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../utils/constants.dart';
+
 //creating an instance of Firebase Authentication
 class AuthMethods {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -14,8 +16,6 @@ class AuthMethods {
 
   static Future<String> signInWithgoogle(context) async {
     try {
-      // await Hive.openBox('User');
-      // final _UserBox = Hive.box('User');
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
       final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -35,12 +35,32 @@ class AuthMethods {
 
       User? userDetails = result.user;
 
+      // try {
+      //   var dataResult = await apiCallBack(
+      //     method: 'POST',
+      //     path: "/users/register-with-google.php",
+      //     body: {
+      //       'firstName': userDetails!.displayName!.split(' ').first,
+      //       'lastName': userDetails.displayName!.split(' ').last,
+      //       'dob': '',
+      //       'gender': '',
+      //       'phone': '',
+      //       'email': userDetails.email,
+      //       'guid': userDetails.uid,
+      //       'specialization': '',
+      //       'address': '',
+      //       'fcmToken': '',
+      //     },
+      //   );
+      // } catch (e) {}
+      print(userDetails!.displayName);
+
       // final SharedPreferences prefs = await _prefs;
-      if (userDetails != null) {
-        log(userDetails.displayName.toString());
-      } else {
-        log("No user");
-      }
+      // if (userDetails != null) {
+      //   log(userDetails.displayName.toString());
+      // } else {
+      //   log("No user");
+      // }
 
       // Map<String, dynamic> userMap = {
       //   'uid': userDetails!.uid,
