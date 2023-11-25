@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/Job%20Card/jobCard.dart';
 import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/utils/components.dart';
+import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 import '../utils/colors.dart';
@@ -113,7 +114,7 @@ class _HomeUIState extends State<HomeUI> {
                 ),
               ),
               TextSpan(
-                text: 'Avishek',
+                text: userData['firstName'],
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,

@@ -5,6 +5,7 @@ import 'package:medilink/screens/Profile/myApplicationsUI.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
+import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 class ProfileUI extends StatefulWidget {
@@ -62,14 +63,16 @@ class _ProfileUIState extends State<ProfileUI> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Vivek Verma',
+                          userData['firstName'] + " " + userData['lastName'],
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: sdp(context, 11),
                           ),
                         ),
                         Text(
-                          'Physicist | MBBS | Dentist | 3 years Exp.',
+                          userData['roleTitle'].toString() +
+                              ' | ' +
+                              userData['specialization'].toString(),
                           style: TextStyle(
                             fontSize: sdp(context, 10),
                           ),

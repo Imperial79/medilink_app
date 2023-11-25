@@ -89,5 +89,11 @@ followUnfollowUser({context, setState, followingUserId}) async {
 // GLOBAL VARIABLES
 
 List<dynamic> vacancyList = [];
+List<dynamic> rolesList = [
+  {"id": "0", "title": "Choose Role"}
+];
+List<dynamic> statesList = [
+  {"id": "0", "stateName": "Choose State", "abbr": "CS"}
+];
 
 // -------------------------------->

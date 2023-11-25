@@ -250,6 +250,7 @@ Widget kTextField(
   String label = 'label',
   bool readOnly = false,
   Color bgColor = Colors.transparent,
+  String? prefixText,
   TextEditingController? controller,
   String hintText = 'Hint text',
   TextInputType? keyboardType,
@@ -262,6 +263,7 @@ Widget kTextField(
   void Function()? onFieldTap,
   void Function()? onShowPassword,
   void Function(String)? onChanged,
+  String? Function(String?)? validator,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +276,7 @@ Widget kTextField(
       Row(
         children: [
           Flexible(
-            child: TextField(
+            child: TextFormField(
               controller: controller,
               onTap: onFieldTap,
               readOnly: readOnly,
@@ -289,6 +291,7 @@ Widget kTextField(
               keyboardType: keyboardType,
               textCapitalization: textCapitalization,
               decoration: InputDecoration(
+                prefixText: prefixText,
                 counterText: '',
                 filled: true,
                 fillColor: bgColor,
@@ -313,6 +316,7 @@ Widget kTextField(
                 ),
               ),
               onChanged: onChanged,
+              validator: validator,
             ),
           ),
           isPasswordField
@@ -342,6 +346,27 @@ Text kBulletSeperator({Color? color}) {
   );
 }
 
+void kSnackBar(
+  BuildContext context, {
+  required String content,
+  bool? isDanger = false,
+}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: isDanger! ? kDangerColor : kPrimaryColor,
+      dismissDirection: DismissDirection.vertical,
+      content: Text(
+        content,
+        style: const TextStyle(
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+          fontFamily: 'Poppins',
+        ),
+      ),
+    ),
+  );
+}
+
 Widget kPageHeader(
   BuildContext context, {
   required String title,
@@ -362,5 +387,19 @@ Widget kPageHeader(
             )
           : SizedBox.shrink(),
     ],
+  );
+}
+
+Container fullScreenLoading(BuildContext context) {
+  return Container(
+    height: double.infinity,
+    width: double.infinity,
+    alignment: Alignment.center,
+    color: Colors.white.withOpacity(0.7),
+    // child: Lottie.asset(
+    //   'lib/assets/icons/loading-animation.json',
+    //   height: sdp(context, 100),
+    // ),
+    child: const CircularProgressIndicator(),
   );
 }

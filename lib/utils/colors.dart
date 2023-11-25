@@ -12,7 +12,7 @@ final Color kPillButtonColor = Color.fromARGB(255, 6, 113, 159);
 const Color kPillColor = Color(0xFFDEE1FB);
 final Color kCircleAvatarColor =
     ColorScheme.fromSeed(seedColor: kPrimaryColor).primaryContainer;
-
+const kDangerColor = Color(0xFFA81C1C);
 // ----------------------------->
 
 ThemeData kThemeData() => ThemeData(

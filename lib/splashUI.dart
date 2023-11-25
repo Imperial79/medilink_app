@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:medilink/screens/homeUI.dart';
+import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/screens/welcomeUI.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -32,7 +32,8 @@ class _SplashUIState extends State<SplashUI> {
     );
     if (!dataResult['error']) {
       userData = dataResult['response'];
-      navPushReplacement(context, const HomeUI());
+      print(userData);
+      navPushReplacement(context, const DashboardUI());
     } else {
       navPushReplacement(context, const WelcomeUI());
     }
