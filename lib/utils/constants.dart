@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -6,9 +6,15 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-String baseUrl = 'https://app-api.shapon.tech';
+// ------------->
+const String appVersion = '1.0.1';
+// ------------->
 
-BorderRadius kRadius(double radius) => BorderRadius.circular(radius);
+Map userData = {};
+
+// /------------------------------------------>
+
+String baseUrl = 'https://app-api.shapon.tech';
 
 Future<Map<dynamic, dynamic>> apiCallBack({
   required String method,
@@ -37,3 +43,51 @@ Future<Map<dynamic, dynamic>> apiCallBack({
   }
   return jsonDecode(response.data);
 }
+
+Future<Map<dynamic, dynamic>> apiCallBackMedia({
+  required String method,
+  required String path,
+  required Map<String, dynamic> body,
+}) async {
+  final dio = Dio();
+  Response response;
+
+  final Directory appDocDir = await getApplicationDocumentsDirectory();
+  final String appDocPath = appDocDir.path;
+  final jar = PersistCookieJar(
+    ignoreExpires: true,
+    storage: FileStorage("$appDocPath/.cookies/"),
+  );
+  dio.interceptors.add(CookieManager(jar));
+
+  final formData = FormData.fromMap(body);
+
+  if (method == 'POST') {
+    response = await dio.post(
+      baseUrl + path,
+      data: formData,
+    );
+  } else {
+    response = await dio.get(baseUrl + path);
+  }
+  return jsonDecode(response.data);
+}
+
+// --------------------------------->
+
+followUnfollowUser({context, setState, followingUserId}) async {
+  var dataResult = await apiCallBack(
+    method: 'POST',
+    path: '/follow/toggle-follow-user.php',
+    body: {
+      'followingUserId': followingUserId,
+    },
+  );
+  return dataResult;
+}
+
+// GLOBAL VARIABLES
+
+List<dynamic> vacancyList = [];
+
+// -------------------------------->

@@ -43,10 +43,12 @@ dependencies:
   firebase_auth: ^4.12.1
   google_sign_in: ^6.1.6
   dio: ^5.3.4
+  intl: ^0.18.1
   path_provider: ^2.1.1
   cookie_jar: ^4.0.8
   dio_cookie_manager: ^3.1.1
   onesignal_flutter: ^3.5.0
+  lottie: ^2.7.0
 
 dev_dependencies:
   flutter_test:

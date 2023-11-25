@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:medilink/screens/welcomeUI.dart';
+import 'package:medilink/splashUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'utils/components.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -26,7 +26,7 @@ class _MainAppState extends State<MainApp> {
   }
 
   void configOneSignel() {
-    OneSignal.shared.setAppId("b44e21a1-3a59-4eaf-ac99-316c3d91fdf7");
+    OneSignal.shared.setAppId("6e30bde6-eb38-4154-bb9c-98d8799ae37c");
   }
 
   @override
@@ -37,7 +37,7 @@ class _MainAppState extends State<MainApp> {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: kThemeData(),
-      home: WelcomeUI(),
+      home: SplashUI(),
     );
   }
 }

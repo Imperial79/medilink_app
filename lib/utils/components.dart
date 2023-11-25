@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/utils/colors.dart';
-import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
+import 'package:intl/intl.dart';
 
 get height5 => SizedBox(height: 5);
 get height10 => SizedBox(height: 10);
@@ -74,15 +74,25 @@ TextStyle kSubtitleStyle(
 }
 
 // ignore: non_constant_identifier_names
-NavPush(BuildContext context, screen) {
+BorderRadius kRadius(double radius) => BorderRadius.circular(radius);
+
+Future<void> navPush(BuildContext context, Widget screen) {
   return Navigator.push(
       context, MaterialPageRoute(builder: (context) => screen));
 }
 
-// ignore: non_constant_identifier_names
-NavPushReplacement(BuildContext context, screen) {
+Future<void> navPushReplacement(BuildContext context, Widget screen) {
   return Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => screen));
+}
+
+Future<void> navPopUntilPush(BuildContext context, Widget screen) {
+  Navigator.popUntil(context, (route) => false);
+  return navPush(context, screen);
+}
+
+String formatDate(String date) {
+  return DateFormat('d-MM-y hh:mm a').format(DateTime.parse(date));
 }
 
 class Pill {

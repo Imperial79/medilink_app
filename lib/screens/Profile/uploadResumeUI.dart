@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
-import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 import 'package:open_filex/open_filex.dart';
 

@@ -3,7 +3,6 @@ import 'package:medilink/Recruiter/recruiterUI.dart';
 import 'package:medilink/screens/loginUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
-import 'package:medilink/utils/constants.dart';
 
 class WelcomeUI extends StatefulWidget {
   const WelcomeUI({super.key});
@@ -42,7 +41,7 @@ class _WelcomeUIState extends State<WelcomeUI> {
               height20,
               MaterialButton(
                 onPressed: () {
-                  NavPush(context, LoginUI());
+                  navPush(context, LoginUI());
                 },
                 color: kPrimaryColor,
                 elevation: 0,
@@ -51,12 +50,12 @@ class _WelcomeUIState extends State<WelcomeUI> {
                 textColor: Colors.white,
                 child: SizedBox(
                   width: double.infinity,
-                  child: Text('Get Started'),
+                  child: Text('Job Finder'),
                 ),
               ),
               MaterialButton(
                 onPressed: () {
-                  NavPush(context, RecruiterUI());
+                  navPush(context, RecruiterUI());
                 },
                 color: kPillColor,
                 elevation: 0,
@@ -72,27 +71,6 @@ class _WelcomeUIState extends State<WelcomeUI> {
                 ),
               ),
               height20,
-              Row(
-                children: [
-                  Text(
-                    'Already a user?',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  width10,
-                  kTextButton(
-                    onTap: () {
-                      NavPush(context, LoginUI());
-                    },
-                    child: Text(
-                      "Log In",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: kPrimaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

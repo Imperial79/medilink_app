@@ -5,7 +5,6 @@ import 'package:medilink/screens/Profile/myApplicationsUI.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
-import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 class ProfileUI extends StatefulWidget {
@@ -99,7 +98,7 @@ class _ProfileUIState extends State<ProfileUI> {
               height10,
               settingsButton(
                 onTap: () {
-                  NavPush(context, UploadResumeUI());
+                  navPush(context, UploadResumeUI());
                 },
                 iconPath: 'assets/icons/resume.svg',
                 label: 'Saved Resumes',
@@ -107,7 +106,7 @@ class _ProfileUIState extends State<ProfileUI> {
               ),
               settingsButton(
                 onTap: () {
-                  NavPush(context, MyApplicationsUI());
+                  navPush(context, MyApplicationsUI());
                 },
                 iconPath: 'assets/icons/my-application.svg',
                 label: 'Applied Jobs',

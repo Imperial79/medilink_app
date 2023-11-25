@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/Job%20detail%20screen/jobDetailUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
-import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 class MyApplicationsUI extends StatefulWidget {
@@ -34,7 +33,7 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
   Widget _appliedJobsCard() {
     return GestureDetector(
       onTap: () {
-        NavPush(context, JobDetailUI());
+        navPush(context, JobDetailUI());
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),

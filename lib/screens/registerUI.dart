@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:medilink/dashboardUI.dart';
-import 'package:medilink/screens/registerUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
@@ -11,14 +10,14 @@ import 'package:medilink/utils/sdp.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 
-class LoginUI extends StatefulWidget {
-  const LoginUI({super.key});
+class RegisterUI extends StatefulWidget {
+  const RegisterUI({super.key});
 
   @override
-  State<LoginUI> createState() => _LoginUIState();
+  State<RegisterUI> createState() => _RegisterUIState();
 }
 
-class _LoginUIState extends State<LoginUI> {
+class _RegisterUIState extends State<RegisterUI> {
   bool isLoading = false;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -98,22 +97,6 @@ class _LoginUIState extends State<LoginUI> {
                     context,
                     fontSize: sdp(context, 13),
                     fontWeight: FontWeight.w500,
-                  ),
-                ),
-                height10,
-                Expanded(
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: MediaQuery.of(context).viewInsets.bottom == 0
-                          ? Colors.white.withOpacity(0)
-                          : Colors.white,
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/images/undraw_doctors_p6aq.svg',
-                    ),
                   ),
                 ),
                 height10,
@@ -210,13 +193,6 @@ class _LoginUIState extends State<LoginUI> {
                       )
                     ],
                   ),
-                ),
-                height15,
-                TextButton(
-                  onPressed: () {
-                    navPush(context, RegisterUI());
-                  },
-                  child: Text("Don't have an account? Create One"),
                 ),
               ],
             ),

@@ -17,7 +17,7 @@ class _JobCardState extends State<JobCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        NavPush(context, JobDetailUI());
+        navPush(context, JobDetailUI());
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 20),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/screens/proposalUI.dart';
-import 'package:medilink/utils/constants.dart';
 import '../utils/colors.dart';
 import '../utils/components.dart';
 import '../utils/sdp.dart';
@@ -183,7 +182,7 @@ class _JobDetailUIState extends State<JobDetailUI> {
       floatingActionButton: SafeArea(
         child: GestureDetector(
           onTap: () {
-            NavPush(context, ProposalUI());
+            navPush(context, ProposalUI());
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 16),
