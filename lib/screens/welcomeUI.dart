@@ -4,7 +4,6 @@ import 'package:medilink/screens/loginUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
-import 'package:medilink/utils/sdp.dart';
 
 class WelcomeUI extends StatefulWidget {
   const WelcomeUI({super.key});
