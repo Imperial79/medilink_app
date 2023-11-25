@@ -32,7 +32,6 @@ class _SplashUIState extends State<SplashUI> {
     );
     if (!dataResult['error']) {
       userData = dataResult['response'];
-      print(userData);
       navPushReplacement(context, const DashboardUI());
     } else {
       navPushReplacement(context, const WelcomeUI());

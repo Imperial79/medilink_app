@@ -95,5 +95,6 @@ List<dynamic> rolesList = [
 List<dynamic> statesList = [
   {"id": "0", "stateName": "Choose State", "abbr": "CS"}
 ];
+List<dynamic> resumeList = [];
 
 // -------------------------------->
