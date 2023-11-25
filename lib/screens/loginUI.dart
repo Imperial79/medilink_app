@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/screens/registerUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
@@ -71,13 +70,13 @@ class _LoginUIState extends State<LoginUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/pattern-bg.webp'),
-            opacity: .2,
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage('assets/images/pattern-bg.webp'),
+        //     opacity: .2,
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.all(15),
@@ -85,7 +84,7 @@ class _LoginUIState extends State<LoginUI> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome again,',
+                  'Welcome,',
                   style: kTitleStyle(
                     context,
                     fontSize: sdp(context, 20),
@@ -93,10 +92,10 @@ class _LoginUIState extends State<LoginUI> {
                   ),
                 ),
                 Text(
-                  'Login to continue',
+                  'Login/Sign Up to continue',
                   style: kTitleStyle(
                     context,
-                    fontSize: sdp(context, 13),
+                    fontSize: sdp(context, 11),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -125,7 +124,6 @@ class _LoginUIState extends State<LoginUI> {
                   maxLength: 10,
                   keyboardType: TextInputType.phone,
                 ),
-                OutlinedButton(onPressed: () {}, child: Text("Send OTP")),
                 height10,
                 Text(
                   'Enter OTP',
@@ -133,6 +131,7 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 kHeight(7),
                 Container(
+                  padding: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: kRadius(10),
@@ -140,29 +139,47 @@ class _LoginUIState extends State<LoginUI> {
                       color: Colors.grey.shade400,
                     ),
                   ),
-                  child: OTPTextField(
-                    length: 5,
-                    margin: EdgeInsets.only(bottom: 10),
-                    keyboardType: TextInputType.number,
-                    width: MediaQuery.of(context).size.width,
-                    fieldWidth: sdp(context, 20),
-                    style: TextStyle(fontSize: 17),
-                    textFieldAlignment: MainAxisAlignment.spaceAround,
-                    fieldStyle: FieldStyle.underline,
-                    onCompleted: (pin) {
-                      print("Completed: " + pin);
-                    },
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: OTPTextField(
+                          length: 5,
+                          margin: EdgeInsets.only(bottom: 10),
+                          keyboardType: TextInputType.number,
+                          width: MediaQuery.of(context).size.width,
+                          fieldWidth: sdp(context, 20),
+                          style: TextStyle(fontSize: 17),
+                          textFieldAlignment: MainAxisAlignment.spaceAround,
+                          fieldStyle: FieldStyle.underline,
+                          onCompleted: (pin) {
+                            print("Completed: " + pin);
+                          },
+                        ),
+                      ),
+                      width10,
+                      // kTextButton(onTap: () {}, child: Text("Send OTP")),
+                      MaterialButton(
+                        onPressed: () {},
+                        shape: RoundedRectangleBorder(
+                          borderRadius: kRadius(100),
+                        ),
+                        color: kPrimaryColor,
+                        elevation: 0,
+                        textColor: Colors.white,
+                        child: Text('SEND OTP'),
+                      )
+                    ],
                   ),
                 ),
                 height20,
                 ElevatedButton(
                   onPressed: () {
-                    navPush(context, DashboardUI());
+                    navPush(context, RegisterUI());
                   },
                   child: SizedBox(
                     width: double.infinity,
                     child: Text(
-                      'LOGIN',
+                      'PROCEED',
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -205,18 +222,11 @@ class _LoginUIState extends State<LoginUI> {
                       ),
                       width10,
                       Text(
-                        'Sign In with Google',
+                        'Google',
                         style: TextStyle(color: Colors.black),
-                      )
+                      ),
                     ],
                   ),
-                ),
-                height15,
-                TextButton(
-                  onPressed: () {
-                    navPush(context, RegisterUI());
-                  },
-                  child: Text("Don't have an account? Create One"),
                 ),
               ],
             ),

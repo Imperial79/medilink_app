@@ -32,6 +32,26 @@ class AuthMethods {
       User? userDetails = result.user;
 
       return "userDetails";
+
+      // try {
+      //   var dataResult = await apiCallBack(
+      //     method: 'POST',
+      //     path: "/users/register-with-google.php",
+      //     body: {
+      //       'firstName': userDetails!.displayName!.split(' ').first,
+      //       'lastName': userDetails.displayName!.split(' ').last,
+      //       'dob': '',
+      //       'gender': '',
+      //       'phone': '',
+      //       'email': userDetails.email,
+      //       'guid': userDetails.uid,
+      //       'specialization': '',
+      //       'address': '',
+      //       'fcmToken': '',
+      //     },
+      //   );
+      // } catch (e) {}
+      print(userDetails!.displayName);
     } catch (e) {
       print(e);
       return 'fail';

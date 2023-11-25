@@ -248,6 +248,7 @@ IconButton kBackButton(BuildContext context) {
 Widget kTextField(
   BuildContext context, {
   String label = 'label',
+  bool readOnly = false,
   Color bgColor = Colors.transparent,
   TextEditingController? controller,
   String hintText = 'Hint text',
@@ -258,6 +259,7 @@ Widget kTextField(
   int? maxLength,
   bool obscureText = false,
   bool isPasswordField = false,
+  void Function()? onFieldTap,
   void Function()? onShowPassword,
   void Function(String)? onChanged,
 }) {
@@ -274,6 +276,8 @@ Widget kTextField(
           Flexible(
             child: TextField(
               controller: controller,
+              onTap: onFieldTap,
+              readOnly: readOnly,
               cursorColor: kPrimaryColorAccent,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
