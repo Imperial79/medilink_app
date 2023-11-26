@@ -92,7 +92,11 @@ Future<void> navPopUntilPush(BuildContext context, Widget screen) {
 }
 
 String formatDate(String date) {
-  return DateFormat('d-MM-y hh:mm a').format(DateTime.parse(date));
+  return DateFormat('d MMM, y').format(DateTime.parse(date));
+}
+
+String formatDateTime(String date) {
+  return DateFormat('d MMM, y hh:mm a').format(DateTime.parse(date));
 }
 
 class Pill {

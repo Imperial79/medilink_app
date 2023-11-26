@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/screens/Profile/profileUI.dart';
-import 'package:medilink/screens/chatUI.dart';
+import 'package:medilink/screens/recruitersUI.dart';
 import 'package:medilink/screens/homeUI.dart';
 import 'package:medilink/screens/savedUI.dart';
 import 'package:medilink/utils/animated_indexed_stack.dart';
@@ -21,7 +21,7 @@ class DashboardUI extends StatefulWidget {
 class _DashboardUIState extends State<DashboardUI> {
   List<Widget> screens = [
     HomeUI(),
-    ChatUI(),
+    RecruitersUI(),
     SavedUI(),
     ProfileUI(),
   ];
@@ -63,7 +63,7 @@ class _DashboardUIState extends State<DashboardUI> {
                 kNavigationButton(
                   index: 1,
                   icon: 'chat',
-                  label: 'Chat',
+                  label: 'Recruiters',
                 ),
                 kNavigationButton(
                   index: 2,

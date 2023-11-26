@@ -6,13 +6,24 @@ import '../utils/components.dart';
 import '../utils/sdp.dart';
 
 class JobCard extends StatefulWidget {
-  const JobCard({super.key});
+  final data;
+  const JobCard({super.key, this.data});
 
   @override
-  State<JobCard> createState() => _JobCardState();
+  State<JobCard> createState() => _JobCardState(data: data);
 }
 
 class _JobCardState extends State<JobCard> {
+  final data;
+  _JobCardState({this.data});
+
+  List tagsList = [];
+  @override
+  void initState() {
+    super.initState();
+    tagsList = data['tags'].split("#");
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,22 +40,12 @@ class _JobCardState extends State<JobCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            height10,
+            height5,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Card(
-                  //   color: kPillColor,
-                  //   elevation: 0,
-                  //   margin: EdgeInsets.zero,
-                  //   shape: StadiumBorder(),
-                  //   child: Padding(
-                  //     padding:
-                  //         EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  //     child:
-
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -55,7 +56,7 @@ class _JobCardState extends State<JobCard> {
                       ),
                       width5,
                       Text(
-                        'Bangalore, India',
+                        data['companyCity'] + ', ' + data['companyState'],
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: sdp(context, 10),
@@ -79,21 +80,21 @@ class _JobCardState extends State<JobCard> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: Text(
-                'Nursing Assistant, Prescott Nursing and Rehab- Earn Up to \$27 an Hour',
+                data['roleTitle'] + ' | ' + data['companyName'],
                 style: TextStyle(
                     fontSize: sdp(context, 13),
                     fontWeight: FontWeight.w600,
                     color: Colors.black),
               ),
             ),
-            height10,
+            height5,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
                 children: [
                   Flexible(
                     child: Text(
-                      'Posted 23 minutes ago',
+                      'Posted on ' + formatDate(data['postDate']),
                       style: TextStyle(
                         fontSize: sdp(context, 9),
                         color: Colors.black,
@@ -103,7 +104,7 @@ class _JobCardState extends State<JobCard> {
                   kBulletSeperator(),
                   Flexible(
                     child: Text(
-                      'Payment Verified',
+                      'Recruiter Verified',
                       style: TextStyle(
                         fontSize: sdp(context, 9),
                         color: Colors.black,
@@ -125,11 +126,13 @@ class _JobCardState extends State<JobCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  statsCard(context, label: 'CTC', content: 'INR 20,000'),
+                  statsCard(context, label: 'CTC', content: data['salary']),
                   width5,
-                  statsCard(context, label: 'Experience', content: '0-2 Years'),
+                  statsCard(context,
+                      label: 'Experience', content: data['experience']),
                   width5,
-                  statsCard(context, label: 'Openings', content: '10'),
+                  statsCard(context,
+                      label: 'Openings', content: data['opening']),
                 ],
               ),
             ),
@@ -147,7 +150,7 @@ class _JobCardState extends State<JobCard> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: Text(
-                'As a 100% employee-owned company, we are deeply invested in enhancing the quality of every life we touch. Atrium is more than skilled nursing center, it is a center of compassion, where every heart and set of hands are committed to a common goal. We believe in extending compassion and respect to each other, to our residents and their families, and to every guest who walks through our doors.',
+                data['requirements'],
                 style: TextStyle(
                   fontSize: sdp(context, 9),
                   color: Colors.black,
@@ -163,27 +166,18 @@ class _JobCardState extends State<JobCard> {
               child: Wrap(
                 spacing: 10,
                 runSpacing: 10,
-                children: [
-                  Pill.label(
-                    label: 'Full Time',
-                    labelColor: Colors.black,
-                  ),
-                  Pill.label(
-                    label: 'Night Shift',
-                    labelColor: Colors.black,
-                  ),
-                  Pill.label(
-                    label: 'Immediate Join',
-                    labelColor: Colors.black,
-                  ),
-                  Pill.label(
-                    label: 'Freshers',
-                    labelColor: Colors.black,
-                  ),
-                ],
+                children: List.generate(
+                  tagsList.length,
+                  (index) {
+                    return Pill.label(
+                      label: tagsList[index],
+                      labelColor: Colors.black,
+                    );
+                  },
+                ),
               ),
             ),
-            height15,
+            height10,
           ],
         ),
       ),

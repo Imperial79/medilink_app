@@ -42,6 +42,7 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
 
   uploadResume() async {
     if (_pickedFile != null) {
+      Navigator.pop(context);
       setState(() => isLoading = true);
       var dataResult = await apiCallBackMedia(
         method: 'POST',
@@ -54,11 +55,15 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
           "resumeName": _fileName.text,
         },
       );
-
+      if (!dataResult['error']) {
+        fetchResumes();
+      }
       setState(() => isLoading = false);
       kSnackBar(context,
           content: dataResult['message'], isDanger: dataResult['error']);
-    } else {}
+    } else {
+      kSnackBar(context, content: "Please choose a document!", isDanger: true);
+    }
   }
 
   Future<void> fetchResumes() async {
@@ -68,7 +73,6 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
       path: "/resume/fetch-my-resumes.php",
       body: {},
     );
-    print(dataResult);
     if (!dataResult['error']) {
       resumeList = dataResult['response'];
     }

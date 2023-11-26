@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/screens/Profile/myApplicationsUI.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
+import 'package:medilink/screens/welcomeUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
@@ -16,134 +18,181 @@ class ProfileUI extends StatefulWidget {
 }
 
 class _ProfileUIState extends State<ProfileUI> {
+  bool isLoading = false;
+
+  Future<void> logout() async {
+    try {
+      setState(() => isLoading = true);
+      var dataResult =
+          await apiCallBack(method: "GET", path: "/users/logout.php");
+
+      if (!dataResult['error']) {
+        final FirebaseAuth auth = FirebaseAuth.instance;
+        await auth.signOut();
+        navPopUntilPush(context, WelcomeUI());
+      }
+
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              kPageHeader(context, title: 'Profile'),
-              height20,
-              Row(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
+                  kPageHeader(context, title: 'Profile'),
+                  height20,
+                  Row(
                     children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundImage: NetworkImage(userData['image']),
-                      ),
-                      height5,
-                      InkWell(
-                        onTap: () {
-                          // NavPush(context, EditProfileUI());
-                        },
-                        borderRadius: kRadius(100),
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          child: Text(
-                            'Edit',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: kPrimaryColor,
+                      Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundImage: NetworkImage(userData['image']),
+                          ),
+                          height5,
+                          InkWell(
+                            onTap: () {
+                              // NavPush(context, EditProfileUI());
+                            },
+                            borderRadius: kRadius(100),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              child: Text(
+                                'Edit',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: kPrimaryColor,
+                                ),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      width20,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userData['firstName'] +
+                                  " " +
+                                  userData['lastName'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: sdp(context, 11),
+                              ),
+                            ),
+                            Text(
+                              userData['roleTitle'].toString() +
+                                  ' | ' +
+                                  userData['specialization'].toString(),
+                              style: TextStyle(
+                                fontSize: sdp(context, 10),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                  width20,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userData['firstName'] + " " + userData['lastName'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: sdp(context, 11),
-                          ),
+                  // kHeight(40),
+                  height10,
+                  Row(
+                    children: [
+                      Text(
+                        'Personal',
+                        style: TextStyle(fontSize: sdp(context, 10)),
+                      ),
+                      Flexible(
+                        child: Divider(
+                          indent: 20,
                         ),
-                        Text(
-                          userData['roleTitle'].toString() +
-                              ' | ' +
-                              userData['specialization'].toString(),
-                          style: TextStyle(
-                            fontSize: sdp(context, 10),
-                          ),
+                      ),
+                    ],
+                  ),
+                  // kHeight(40),
+                  // subHeader('Personal'),
+                  height10,
+                  settingsButton(
+                    onTap: () {
+                      navPush(context, UploadResumeUI());
+                    },
+                    iconPath: 'assets/icons/resume.svg',
+                    label: 'Saved Resumes',
+                    subtitle: 'View your saved resumes',
+                  ),
+                  settingsButton(
+                    onTap: () {
+                      navPush(context, MyApplicationsUI());
+                    },
+                    iconPath: 'assets/icons/my-application.svg',
+                    label: 'Applied Jobs',
+                    subtitle: 'View your recent submitted applications',
+                  ),
+                  settingsButton(
+                    onTap: () {
+                      setState(() {
+                        activeTabGlobal.value = 2;
+                      });
+                    },
+                    iconPath: 'assets/icons/pending.svg',
+                    label: 'Saved Jobs',
+                    subtitle: 'View your bookmarked job profiles',
+                  ),
+                  height10,
+                  Row(
+                    children: [
+                      Text(
+                        'System',
+                        style: TextStyle(fontSize: sdp(context, 10)),
+                      ),
+                      Flexible(
+                        child: Divider(
+                          indent: 20,
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  // subHeader('System'),
+                  height20,
+                  GestureDetector(
+                    onTap: () {
+                      logout();
+                    },
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      width: double.infinity,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: kRadius(15),
+                      ),
+                      child: Text(
+                        'Logout',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              kHeight(40),
-              Row(
-                children: [
-                  Text(
-                    'Utilities',
-                    style: TextStyle(fontSize: sdp(context, 10)),
-                  ),
-                  Flexible(
-                    child: Divider(
-                      indent: 20,
-                    ),
-                  ),
-                ],
-              ),
-              kHeight(40),
-              subHeader('Personal'),
-              height10,
-              settingsButton(
-                onTap: () {
-                  navPush(context, UploadResumeUI());
-                },
-                iconPath: 'assets/icons/resume.svg',
-                label: 'Saved Resumes',
-                subtitle: 'View your saved resumes',
-              ),
-              settingsButton(
-                onTap: () {
-                  navPush(context, MyApplicationsUI());
-                },
-                iconPath: 'assets/icons/my-application.svg',
-                label: 'Applied Jobs',
-                subtitle: 'View your recent submitted applications',
-              ),
-              settingsButton(
-                onTap: () {
-                  setState(() {
-                    activeTabGlobal.value = 2;
-                  });
-                },
-                iconPath: 'assets/icons/pending.svg',
-                label: 'Saved Jobs',
-                subtitle: 'View your pending projects',
-              ),
-              height10,
-              subHeader('System'),
-              height10,
-              Container(
-                alignment: Alignment.topRight,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: kRadius(15),
-                ),
-                child: Text(
-                  'Logout',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+            isLoading ? fullScreenLoading(context) : SizedBox()
+          ],
         ),
       ),
     );

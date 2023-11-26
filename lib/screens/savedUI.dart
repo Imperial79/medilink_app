@@ -22,18 +22,18 @@ class _SavedUIState extends State<SavedUI> {
               kPageHeader(
                 context,
                 title: 'Saved',
-                subtitle: 'Find your saved or bookmarked projects here',
+                subtitle: 'Find your saved or bookmarked job profiles here',
               ),
-              height20,
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 5,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return JobCard();
-                  },
-                ),
-              ),
+              // height20,
+              // Expanded(
+              //   child: ListView.builder(
+              //     itemCount: 5,
+              //     shrinkWrap: true,
+              //     itemBuilder: (context, index) {
+              //       return JobCard();
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ),

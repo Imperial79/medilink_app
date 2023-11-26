@@ -3,14 +3,14 @@ import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/sdp.dart';
 
-class ChatUI extends StatefulWidget {
-  const ChatUI({super.key});
+class RecruitersUI extends StatefulWidget {
+  const RecruitersUI({super.key});
 
   @override
-  State<ChatUI> createState() => _ChatUIState();
+  State<RecruitersUI> createState() => _RecruitersUIState();
 }
 
-class _ChatUIState extends State<ChatUI> {
+class _RecruitersUIState extends State<RecruitersUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,23 +22,23 @@ class _ChatUIState extends State<ChatUI> {
               padding: EdgeInsets.symmetric(horizontal: 15.0),
               child: kPageHeader(
                 context,
-                title: 'Chat',
-                subtitle: 'Recent chats with recruiters are shown here',
+                title: 'Recruiters',
+                subtitle: 'Start following recruiters',
               ),
             ),
-            kHeight(10),
-            Expanded(
-              child: ListView.separated(
-                itemCount: 10,
-                padding: EdgeInsets.only(top: 10),
-                itemBuilder: (context, index) {
-                  return chatTile();
-                },
-                separatorBuilder: (context, index) => Divider(
-                  color: Colors.grey.shade200,
-                ),
-              ),
-            ),
+            // kHeight(10),
+            // Expanded(
+            //   child: ListView.separated(
+            //     itemCount: 10,
+            //     padding: EdgeInsets.only(top: 10),
+            //     itemBuilder: (context, index) {
+            //       return chatTile();
+            //     },
+            //     separatorBuilder: (context, index) => Divider(
+            //       color: Colors.grey.shade200,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

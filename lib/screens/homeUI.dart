@@ -5,7 +5,7 @@ import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
-
+import 'dart:developer' as dev;
 import '../utils/colors.dart';
 
 class HomeUI extends StatefulWidget {
@@ -20,76 +20,142 @@ class _HomeUIState extends State<HomeUI> {
   String _selectedPostTime = '';
   String _selectedLocation = '';
   String _selectedField = '';
+  bool isLoading = false;
+  int pageNo = 0;
+  final searchKey = TextEditingController();
+  String city = '';
+  String state = '';
+  String selectedDistanceRange = '0 - 10';
+
+  @override
+  void initState() {
+    super.initState();
+    pullRefresher();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    searchKey.dispose();
+  }
+
+  Future<void> pullRefresher() async {
+    await fetchJobVacancies();
+  }
+
+  Future<void> fetchJobVacancies() async {
+    try {
+      setState(() => isLoading = true);
+
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/vacancy/fetch-vacancies.php",
+        body: {
+          "pageNo": pageNo,
+          "searchKey": searchKey.text,
+          "city": city,
+          "state": state,
+          "distanceRange": selectedDistanceRange
+        },
+      );
+      if (!dataResult['error']) {
+        vacancyList.addAll(dataResult['response']);
+      }
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: SafeArea(
+        top: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              color: Color(0xFFDEE1FB),
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    header(context),
-                    height20,
-                    Text(
-                      'Find a job',
-                      style: kTitleStyle(context, color: Colors.black),
-                    ),
-                    height10,
-                    _searchBar(),
-                    height15,
-                  ],
+            _hero(context),
+            height10,
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: pullRefresher,
+                child: ListView.builder(
+                  itemCount: vacancyList.length,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  physics: AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return JobCard(data: vacancyList[index]);
+                  },
                 ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  height10,
-                  Wrap(
-                    alignment: WrapAlignment.start,
-                    runAlignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 10,
-                    children: [
-                      Text(
-                        'Recent Searches: ',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontWeight: FontWeight.w500,
-                          fontSize: sdp(context, 10),
-                        ),
-                      ),
-                      homePill(label: 'Physician'),
-                      homePill(label: '2 years'),
-                      homePill(label: 'Therapist'),
-                      homePill(label: 'Bangalore, Karnataka'),
-                    ],
-                  ),
-                  height20,
-                  Text(
-                    'Popular job profiles',
-                    style: kSubtitleStyle(context, color: Colors.black),
-                  ),
-                  height10,
-                  JobCard(),
-                  JobCard(),
-                  JobCard(),
-                  JobCard(),
-                ],
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget _hero(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          color: Color(0xFFDEE1FB),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                height10,
+                header(context),
+                height5,
+                Text(
+                  'Find a job',
+                  style: kTitleStyle(context, color: Colors.black),
+                ),
+                height10,
+                _searchBar(),
+                height15,
+              ],
+            ),
+          ),
+        ),
+        height10,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.start,
+                runAlignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 10,
+                children: [
+                  Text(
+                    'Filters: ',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                      fontSize: sdp(context, 10),
+                    ),
+                  ),
+                  homePill(label: userData['roleTitle']),
+                  homePill(label: userData['city'] + ', ' + userData['state']),
+                  homePill(label: selectedDistanceRange + ' km'),
+                ],
+              ),
+              height10,
+              Text(
+                'Personalised job profiles',
+                style: kSubtitleStyle(context, color: Colors.black),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -124,12 +190,15 @@ class _HomeUIState extends State<HomeUI> {
           ),
         ),
         GestureDetector(
-            onTap: () {
-              setState(() {
-                activeTabGlobal.value = 3;
-              });
-            },
-            child: CircleAvatar()),
+          onTap: () {
+            setState(() {
+              activeTabGlobal.value = 3;
+            });
+          },
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(userData['image']),
+          ),
+        ),
       ],
     );
   }
@@ -153,6 +222,7 @@ class _HomeUIState extends State<HomeUI> {
           width10,
           Flexible(
             child: TextField(
+              controller: searchKey,
               cursorColor: Colors.purple.shade100,
               style: TextStyle(
                 color: Colors.black,
