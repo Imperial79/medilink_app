@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medilink/Recruiter/recruiterUI.dart';
-import 'package:medilink/screens/loginUI.dart';
+import 'package:medilink/Recruiter_Portal/recruiterWebviewUI.dart';
+import 'package:medilink/screens/Auth/loginUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 
@@ -55,7 +55,7 @@ class _WelcomeUIState extends State<WelcomeUI> {
               ),
               MaterialButton(
                 onPressed: () {
-                  navPush(context, RecruiterUI());
+                  navPush(context, RecruiterWebViewUI());
                 },
                 color: kPillColor,
                 elevation: 0,

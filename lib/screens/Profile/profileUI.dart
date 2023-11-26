@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/screens/Profile/myApplicationsUI.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
-import 'package:medilink/screens/welcomeUI.dart';
+import 'package:medilink/screens/Auth/welcomeUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';

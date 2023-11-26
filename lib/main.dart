@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:medilink/splashUI.dart';
+import 'package:medilink/screens/Auth/splashUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'utils/components.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';

@@ -5,14 +5,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 // Import for iOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
-class RecruiterUI extends StatefulWidget {
-  const RecruiterUI({super.key});
+class RecruiterWebViewUI extends StatefulWidget {
+  const RecruiterWebViewUI({super.key});
 
   @override
-  State<RecruiterUI> createState() => _RecruiterUIState();
+  State<RecruiterWebViewUI> createState() => _RecruiterWebViewUIState();
 }
 
-class _RecruiterUIState extends State<RecruiterUI> {
+class _RecruiterWebViewUIState extends State<RecruiterWebViewUI> {
   late final WebViewController _controller;
 
   @override

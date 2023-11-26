@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:medilink/dashboardUI.dart';
-import 'package:medilink/screens/registerUI.dart';
+import 'package:medilink/screens/Auth/registerUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
@@ -159,7 +158,7 @@ class _LoginUIState extends State<LoginUI> {
     }
   }
 
-  Future<void> _loginUsingGoogle() async {
+  Future<void> loginWithGoogle() async {
     try {
       setState(() => isLoading = true);
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -181,10 +180,13 @@ class _LoginUIState extends State<LoginUI> {
 
       User? userDetails = result.user;
 
-      var dataResult = await apiCallBack(
-        method: "POST",
-        path: "/users/check-user.php",
-      );
+      print(userDetails?.email);
+      print(userDetails?.uid);
+
+      // var dataResult = await apiCallBack(
+      //   method: "POST",
+      //   path: "/users/check-user.php",
+      // );
 
       setState(() => isLoading = true);
     } catch (e) {
@@ -210,13 +212,6 @@ class _LoginUIState extends State<LoginUI> {
       body: Stack(
         children: [
           Container(
-            // decoration: BoxDecoration(
-            //   image: DecorationImage(
-            //     image: AssetImage('assets/images/pattern-bg.webp'),
-            //     opacity: .2,
-            //     fit: BoxFit.cover,
-            //   ),
-            // ),
             child: SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(15),
@@ -351,8 +346,8 @@ class _LoginUIState extends State<LoginUI> {
                     ),
                     height20,
                     ElevatedButton(
-                      onPressed: () async {
-                        await _loginUsingGoogle();
+                      onPressed: () {
+                        loginWithGoogle();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

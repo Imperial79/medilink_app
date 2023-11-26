@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:medilink/dashboardUI.dart';
-import 'package:medilink/screens/welcomeUI.dart';
+import 'package:medilink/screens/Auth/welcomeUI.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/sdp.dart';
-import '../../utils/constants.dart';
+import '../../../../utils/constants.dart';
 
 class SplashUI extends StatefulWidget {
   const SplashUI({super.key});
@@ -21,6 +21,7 @@ class _SplashUIState extends State<SplashUI> {
   }
 
   Future<void> _functionCaller() async {
+    await fetchStates();
     _auth();
   }
 
@@ -35,6 +36,16 @@ class _SplashUIState extends State<SplashUI> {
       navPushReplacement(context, const DashboardUI());
     } else {
       navPushReplacement(context, const WelcomeUI());
+    }
+  }
+
+  Future<void> fetchStates() async {
+    var dataResult = await apiCallBack(
+      method: "GET",
+      path: "/states/fetch-states.php",
+    );
+    if (!dataResult['error']) {
+      statesList = dataResult['response'];
     }
   }
 

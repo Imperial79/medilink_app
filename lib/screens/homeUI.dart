@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:medilink/Job%20Card/jobCard.dart';
+import 'package:medilink/Job%20detail%20screen/jobCard.dart';
 import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
-import 'dart:developer' as dev;
 import '../utils/colors.dart';
 
 class HomeUI extends StatefulWidget {
@@ -17,15 +16,15 @@ class HomeUI extends StatefulWidget {
 
 class _HomeUIState extends State<HomeUI> {
   String _selectedSearch = '';
-  String _selectedPostTime = '';
   String _selectedLocation = '';
   String _selectedField = '';
   bool isLoading = false;
   int pageNo = 0;
   final searchKey = TextEditingController();
-  String city = '';
+  final city = TextEditingController(text: userData['city']);
   String state = '';
   String selectedDistanceRange = '0 - 10';
+  String _selectedState = statesList[0]['stateName'];
 
   @override
   void initState() {
@@ -53,7 +52,7 @@ class _HomeUIState extends State<HomeUI> {
         body: {
           "pageNo": pageNo,
           "searchKey": searchKey.text,
-          "city": city,
+          "city": city.text,
           "state": state,
           "distanceRange": selectedDistanceRange
         },
@@ -240,13 +239,14 @@ class _HomeUIState extends State<HomeUI> {
           ),
           GestureDetector(
             onTap: () {
-              // showModalBottomSheet(
-              //   context: context,
-              //   backgroundColor: kScaffoldColor,
-              //   builder: (context) {
-              //     return filterModalSheet();
-              //   },
-              // );
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: kScaffoldColor,
+                isScrollControlled: true,
+                builder: (context) {
+                  return filterModalSheet();
+                },
+              );
             },
             child: CircleAvatar(
               child: SvgPicture.asset(
@@ -289,19 +289,19 @@ class _HomeUIState extends State<HomeUI> {
                       ),
                       TextButton(
                         onPressed: () {
-                          setState(
-                            () {
-                              _selectedField = '';
-                              _selectedLocation = '';
-                              _selectedPostTime = '';
-                            },
-                          );
+                          // setState(
+                          //   () {
+                          //     _selectedField = '';
+                          //     _selectedLocation = '';
+                          //     selectedDistanceRange = '';
+                          //   },
+                          // );
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: Colors.red.shade100,
+                          foregroundColor: kPrimaryColor,
                         ),
                         child: Text(
-                          'Clear All',
+                          'Apply',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
@@ -311,55 +311,121 @@ class _HomeUIState extends State<HomeUI> {
                   ),
                 ),
                 height10,
-                subHeading('Project Posted'),
+                subHeading('Distance (in kms)'),
                 height10,
                 SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      filterBtn(setState, label: '< 1 hours', type: 'time'),
-                      filterBtn(setState, label: '< 24 hours', type: 'time'),
-                      filterBtn(setState, label: 'Yesterday', type: 'time'),
-                      filterBtn(setState, label: 'This Week', type: 'time'),
+                      filterBtn(setState, label: '0 - 10', type: 'distance'),
+                      filterBtn(setState, label: '11 - 20', type: 'distance'),
+                      filterBtn(setState, label: '21 - 30', type: 'distance'),
+                      filterBtn(setState, label: '31 - 40', type: 'distance'),
                     ],
                   ),
                 ),
                 height20,
-                subHeading('Preferred Client Location'),
+                subHeading('Preferred Location'),
                 height10,
-                SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  scrollDirection: Axis.horizontal,
+                // SingleChildScrollView(
+                //   padding: EdgeInsets.symmetric(horizontal: 20),
+                //   scrollDirection: Axis.horizontal,
+                //   child: Row(
+                //     children: [
+                //       filterBtn(setState, label: 'Canada', type: 'location'),
+                //       filterBtn(setState,
+                //           label: 'United States', type: 'location'),
+                //       filterBtn(setState, label: 'Hong Kong', type: 'location'),
+                //       filterBtn(setState, label: 'India', type: 'location'),
+                //       filterBtn(setState, label: 'Ukraine', type: 'location'),
+                //     ],
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      filterBtn(setState, label: 'Canada', type: 'location'),
-                      filterBtn(setState,
-                          label: 'United States', type: 'location'),
-                      filterBtn(setState, label: 'Hong Kong', type: 'location'),
-                      filterBtn(setState, label: 'India', type: 'location'),
-                      filterBtn(setState, label: 'Ukraine', type: 'location'),
+                      Flexible(
+                        child: kTextField(
+                          context,
+                          controller: city,
+                          bgColor: Colors.white,
+                          hintText: 'Bengaluru, Mumbai',
+                          label: "City",
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'This is empty!';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      width10,
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'State',
+                              style: TextStyle(fontSize: sdp(context, 9)),
+                            ),
+                            kHeight(7),
+                            Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                borderRadius: kRadius(10),
+                                border: Border.all(color: Colors.grey.shade400),
+                              ),
+                              child: DropdownButton(
+                                value: _selectedState,
+                                underline: SizedBox.shrink(),
+                                isDense: true,
+                                menuMaxHeight:
+                                    MediaQuery.of(context).size.height * .5,
+                                isExpanded: true,
+                                dropdownColor: Colors.white,
+                                borderRadius: kRadius(10),
+                                alignment: AlignmentDirectional.bottomCenter,
+                                elevation: 24,
+                                padding: EdgeInsets.all(8),
+                                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                                iconSize: 20,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'Montserrat',
+                                ),
+                                items:
+                                    List.generate(statesList.length, (index) {
+                                  return DropdownMenuItem(
+                                    value: statesList[index]['stateName']
+                                        .toString(),
+                                    child: Text(statesList[index]['stateName']),
+                                  );
+                                }),
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      print(value);
+                                      _selectedState = value!;
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 height20,
-                subHeading('Project Field'),
-                height10,
-                SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      filterBtn(setState, label: 'UI Design', type: 'field'),
-                      filterBtn(setState, label: 'Logo Design', type: 'field'),
-                      filterBtn(setState,
-                          label: 'Graphic Design', type: 'field'),
-                      filterBtn(setState, label: 'Icon Design', type: 'field'),
-                      filterBtn(setState, label: 'Video Edit', type: 'field'),
-                    ],
-                  ),
-                ),
-                height20,
+                SizedBox(
+                  height: MediaQuery.of(context).viewInsets.bottom,
+                )
               ],
             ),
           ),
@@ -374,24 +440,11 @@ class _HomeUIState extends State<HomeUI> {
     String? type,
   }) {
     bool _isSelected;
-    if (type == 'time') {
-      _isSelected = _selectedPostTime == label;
-    } else if (type == 'location') {
-      _isSelected = _selectedLocation == label;
-    } else {
-      _isSelected = _selectedField == label;
-    }
+    _isSelected = selectedDistanceRange == label;
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (type == 'time') {
-            _selectedPostTime = label;
-          } else if (type == 'location') {
-            _selectedLocation = label;
-          } else {
-            //  selected field
-            _selectedField = label;
-          }
+          selectedDistanceRange = label;
         });
       },
       child: Container(

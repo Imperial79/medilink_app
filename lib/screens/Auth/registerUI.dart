@@ -41,7 +41,7 @@ class _RegisterUIState extends State<RegisterUI> {
 
   String _selectedGender = 'M';
   String _selectedRole = '0';
-  String _selectedState = 'Choose State';
+  String _selectedState = statesList[0]['stateName'];
 
   @override
   void initState() {
@@ -58,7 +58,6 @@ class _RegisterUIState extends State<RegisterUI> {
       email.text = widget.email;
     }
     fetchRoles();
-    fetchStates();
   }
 
   @override
@@ -82,19 +81,6 @@ class _RegisterUIState extends State<RegisterUI> {
       setState(() {
         rolesList = dataResult['response'];
         _selectedRole = rolesList[0]['id'];
-      });
-    }
-  }
-
-  Future<void> fetchStates() async {
-    var dataResult = await apiCallBack(
-      method: "GET",
-      path: "/states/fetch-states.php",
-    );
-    if (!dataResult['error']) {
-      setState(() {
-        statesList = dataResult['response'];
-        _selectedState = statesList[0]['stateName'];
       });
     }
   }
@@ -457,49 +443,66 @@ class _RegisterUIState extends State<RegisterUI> {
                                 ),
                                 width10,
                                 Flexible(
-                                  child: Container(
-                                    padding: EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      borderRadius: kRadius(10),
-                                      border: Border.all(
-                                          color: Colors.grey.shade400),
-                                    ),
-                                    child: DropdownButton(
-                                      value: _selectedState,
-                                      underline: SizedBox.shrink(),
-                                      isDense: true,
-                                      isExpanded: true,
-                                      dropdownColor: Colors.white,
-                                      borderRadius: kRadius(10),
-                                      alignment:
-                                          AlignmentDirectional.bottomCenter,
-                                      elevation: 24,
-                                      padding: EdgeInsets.all(8),
-                                      icon: Icon(
-                                          Icons.keyboard_arrow_down_rounded),
-                                      iconSize: 20,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: 'Montserrat',
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'State',
+                                        style: TextStyle(
+                                            fontSize: sdp(context, 9)),
                                       ),
-                                      items: List.generate(statesList.length,
-                                          (index) {
-                                        return DropdownMenuItem(
-                                          value: statesList[index]['stateName']
-                                              .toString(),
-                                          child: Text(
-                                              statesList[index]['stateName']),
-                                        );
-                                      }),
-                                      onChanged: (value) {
-                                        setState(
-                                          () {
-                                            print(value);
-                                            _selectedState = value!;
+                                      kHeight(7),
+                                      Container(
+                                        padding: EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          borderRadius: kRadius(10),
+                                          border: Border.all(
+                                              color: Colors.grey.shade400),
+                                        ),
+                                        child: DropdownButton(
+                                          value: _selectedState,
+                                          underline: SizedBox.shrink(),
+                                          isDense: true,
+                                          isExpanded: true,
+                                          dropdownColor: Colors.white,
+                                          borderRadius: kRadius(10),
+                                          menuMaxHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .5,
+                                          alignment:
+                                              AlignmentDirectional.bottomCenter,
+                                          elevation: 24,
+                                          padding: EdgeInsets.all(8),
+                                          icon: Icon(Icons
+                                              .keyboard_arrow_down_rounded),
+                                          iconSize: 20,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: 'Montserrat',
+                                          ),
+                                          items: List.generate(
+                                              statesList.length, (index) {
+                                            return DropdownMenuItem(
+                                              value: statesList[index]
+                                                      ['stateName']
+                                                  .toString(),
+                                              child: Text(statesList[index]
+                                                  ['stateName']),
+                                            );
+                                          }),
+                                          onChanged: (value) {
+                                            setState(
+                                              () {
+                                                print(value);
+                                                _selectedState = value!;
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
