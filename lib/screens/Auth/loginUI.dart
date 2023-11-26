@@ -29,16 +29,17 @@ class _LoginUIState extends State<LoginUI> {
   bool isOtpSent = false;
   bool isRegister = false;
   int counter = 0;
-  late Timer timer;
-
-  String gmail = '';
-  String guid = '';
-
+  Timer? timer;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -110,11 +111,7 @@ class _LoginUIState extends State<LoginUI> {
       navPush(
         context,
         RegisterUI(
-            type: "Phone",
-            phone: phone.text,
-            otp: otp,
-            email: gmail,
-            guid: guid),
+            type: "Phone", phone: phone.text, otp: otp, email: '', guid: ''),
       );
     } else {
       setState(() => isLoading = false);
@@ -149,48 +146,80 @@ class _LoginUIState extends State<LoginUI> {
       body: body,
     );
     if (!dataResult['error']) {
-      setState(() => isLoading = false);
       userData = dataResult['response'];
       navPushReplacement(context, const DashboardUI());
     } else {
-      setState(() => isLoading = false);
       kSnackBar(context, content: dataResult['message']);
     }
+    setState(() => isLoading = false);
   }
 
   Future<void> loginWithGoogle() async {
     try {
       setState(() => isLoading = true);
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+      await _firebaseAuth.signOut();
       final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+      await _googleSignIn.signOut();
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
-
       final GoogleSignInAuthentication? googleSignInAuthentication =
           await googleSignInAccount!.authentication;
-
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleSignInAuthentication!.idToken,
         accessToken: googleSignInAuthentication.accessToken,
       );
-
       UserCredential result =
           await _firebaseAuth.signInWithCredential(credential);
-
       User? userDetails = result.user;
 
-      print(userDetails?.email);
-      print(userDetails?.uid);
+      Map<String, dynamic> body = {};
+      try {
+        await OneSignal.shared.getDeviceState().then((value) async {
+          var fcmToken = value!.userId!;
+          body = {
+            "email": userDetails?.email,
+            "guid": userDetails?.uid,
+            "fcmToken": fcmToken.toString(),
+          };
+        });
+      } catch (e) {
+        body = {
+          "email": userDetails?.email,
+          "guid": userDetails?.uid,
+          "fcmToken": "",
+        };
+      }
 
-      // var dataResult = await apiCallBack(
-      //   method: "POST",
-      //   path: "/users/check-user.php",
-      // );
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/users/login-with-google.php",
+        body: body,
+      );
 
-      setState(() => isLoading = true);
+      if (!dataResult['error']) {
+        userData = dataResult['response'];
+        navPushReplacement(context, const DashboardUI());
+      } else {
+        if (dataResult['action'] == "Register") {
+          navPush(
+            context,
+            RegisterUI(
+              type: "Email",
+              phone: '',
+              otp: '',
+              email: userDetails?.email,
+              guid: userDetails?.uid,
+            ),
+          );
+        } else {
+          kSnackBar(context, content: dataResult['message']);
+        }
+      }
+
+      setState(() => isLoading = false);
     } catch (e) {
-      setState(() => isLoading = true);
+      setState(() => isLoading = false);
       print(e);
     }
   }

@@ -49,9 +49,7 @@ class _RegisterUIState extends State<RegisterUI> {
     rolesList = [
       {"id": "0", "title": "Choose Role"}
     ];
-    statesList = [
-      {"id": "0", "stateName": "Choose State", "abbr": "CS"}
-    ];
+
     if (widget.type == "Phone") {
       phone.text = widget.phone;
     } else {
@@ -91,7 +89,6 @@ class _RegisterUIState extends State<RegisterUI> {
     try {
       await OneSignal.shared.getDeviceState().then((value) async {
         var fcmToken = value!.userId!;
-        // print("FCM" + fcmToken.toString());
         body = {
           "firstName": firstName.text,
           "lastName": lastName.text,
@@ -112,7 +109,7 @@ class _RegisterUIState extends State<RegisterUI> {
       body = {
         "firstName": firstName.text,
         "lastName": lastName.text,
-        "dob": dob,
+        "dob": dob.text,
         "gender": _selectedGender,
         "phone": widget.phone,
         "email": email.text,
@@ -134,7 +131,7 @@ class _RegisterUIState extends State<RegisterUI> {
     if (!dataResult['error']) {
       setState(() => isLoading = false);
       userData = dataResult['response'];
-      navPushReplacement(context, const DashboardUI());
+      navPopUntilPush(context, const DashboardUI());
     } else {
       setState(() => isLoading = false);
       Navigator.pop(context);
@@ -153,7 +150,7 @@ class _RegisterUIState extends State<RegisterUI> {
         body = {
           "firstName": firstName.text,
           "lastName": lastName.text,
-          "dob": dob,
+          "dob": dob.text,
           "gender": _selectedGender,
           "phone": phone.text,
           "email": widget.email,
@@ -170,7 +167,7 @@ class _RegisterUIState extends State<RegisterUI> {
       body = {
         "firstName": firstName.text,
         "lastName": lastName.text,
-        "dob": dob,
+        "dob": dob.text,
         "gender": _selectedGender,
         "phone": phone.text,
         "email": widget.email,
@@ -189,17 +186,15 @@ class _RegisterUIState extends State<RegisterUI> {
       body: body,
     );
 
-    print(dataResult);
-
     if (!dataResult['error']) {
       setState(() => isLoading = false);
       userData = dataResult['response'];
-      // navPushReplacement(context, const DashboardUI());
+      navPopUntilPush(context, const DashboardUI());
     } else {
       setState(() => isLoading = false);
-      Navigator.pop(context);
-      kSnackBar(context, content: dataResult['message']);
     }
+    kSnackBar(context,
+        content: dataResult['message'], isDanger: dataResult['error']);
   }
 
   @override
