@@ -15,9 +15,6 @@ class HomeUI extends StatefulWidget {
 }
 
 class _HomeUIState extends State<HomeUI> {
-  String _selectedSearch = '';
-  String _selectedLocation = '';
-  String _selectedField = '';
   bool isLoading = false;
   int pageNo = 0;
   final searchKey = TextEditingController();
@@ -475,28 +472,20 @@ class _HomeUIState extends State<HomeUI> {
     Color? labelColor,
     bool hasShadow = true,
   }) {
-    bool _isSelected = _selectedSearch == label;
     return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedSearch = label;
-        });
-      },
+      onTap: () {},
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: _isSelected ? kPrimaryColor : null,
           borderRadius: BorderRadius.circular(100),
           border: Border.all(
-            color: !_isSelected ? Colors.grey.shade300 : Colors.transparent,
+            color: Colors.grey.shade300,
           ),
           boxShadow: [
             BoxShadow(
-                color: _isSelected
-                    ? kPrimaryColorAccent.withOpacity(0.7)
-                    : Colors.transparent,
+                color: Colors.transparent,
                 blurRadius: 20,
                 spreadRadius: 1,
                 offset: Offset(0, 5)),
@@ -511,9 +500,9 @@ class _HomeUIState extends State<HomeUI> {
             Text(
               label,
               style: TextStyle(
-                color: _isSelected ? Colors.white : Colors.black,
+                color: Colors.black,
                 fontSize: 10,
-                fontWeight: _isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
