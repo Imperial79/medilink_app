@@ -7,6 +7,7 @@ import 'package:medilink/screens/savedUI.dart';
 import 'package:medilink/utils/animated_indexed_stack.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
+import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 ValueNotifier activeTabGlobal = new ValueNotifier(0);
@@ -25,7 +26,43 @@ class _DashboardUIState extends State<DashboardUI> {
     SavedUI(),
     ProfileUI(),
   ];
-  // int activeTab = 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchSurvey();
+    });
+  }
+
+  Future<void> fetchSurvey() async {
+    try {
+      var dataResult = await apiCallBack(
+        method: "GET",
+        path: "/survey/fetch-survey.php",
+      );
+      if (!dataResult['error']) {
+        surveyPopup(context, dataResult['response']);
+      }
+    } catch (e) {}
+  }
+
+  Future<void> surveyResponse(surveyId, choice) async {
+    try {
+      Navigator.pop(context);
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/survey/survey-response.php",
+        body: {
+          "surveyId": surveyId,
+          "choice": choice,
+        },
+      );
+
+      kSnackBar(context,
+          content: dataResult['message'], isDanger: dataResult['error']);
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -119,6 +156,63 @@ class _DashboardUIState extends State<DashboardUI> {
           ],
         ),
       ),
+    );
+  }
+
+  void surveyPopup(context, var data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          elevation: 0,
+          child: Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.lightBlueAccent,
+                  Colors.lightGreenAccent,
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.close),
+                  ),
+                ),
+                Text(
+                  data['question'],
+                ),
+                height10,
+                Row(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {
+                        surveyResponse(data['id'], "Yes");
+                      },
+                      child: Text("Yes"),
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        surveyResponse(data['id'], "No");
+                      },
+                      child: Text("No"),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

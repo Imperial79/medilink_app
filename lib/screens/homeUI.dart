@@ -26,7 +26,7 @@ class _HomeUIState extends State<HomeUI> {
   @override
   void initState() {
     super.initState();
-    pullRefresher();
+    fetchJobVacancies();
   }
 
   @override
