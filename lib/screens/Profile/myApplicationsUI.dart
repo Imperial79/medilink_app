@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:medilink/Job%20detail%20screen/jobDetailUI.dart';
+import 'package:medilink/Job%20detail%20screen/vacancyDetailsUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -23,17 +23,21 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
           shrinkWrap: true,
           padding: EdgeInsets.all(15),
           itemBuilder: (context, index) {
-            return _appliedJobsCard();
+            return _appliedJobsCard({});
           },
         ),
       ),
     );
   }
 
-  Widget _appliedJobsCard() {
+  Widget _appliedJobsCard(var data) {
     return GestureDetector(
       onTap: () {
-        navPush(context, JobDetailUI());
+        navPush(
+            context,
+            VacancyDetailUI(
+              vacancyId: data['id'],
+            ));
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),

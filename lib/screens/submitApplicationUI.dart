@@ -1,80 +1,134 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:medilink/screens/Profile/uploadResumeUI.dart';
 import 'package:medilink/utils/components.dart';
+import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 import '../utils/colors.dart';
 
-class ProposalUI extends StatefulWidget {
-  const ProposalUI({super.key});
+class SubmitApplicationUI extends StatefulWidget {
+  final vacancyDetail;
+  const SubmitApplicationUI({super.key, required this.vacancyDetail});
 
   @override
-  State<ProposalUI> createState() => _ProposalUIState();
+  State<SubmitApplicationUI> createState() => _SubmitApplicationUIState();
 }
 
-class _ProposalUIState extends State<ProposalUI> {
+class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
+  bool isLoading = false;
   bool readLess = true;
-  int selectedBidType = 0;
-  int milestoneCount = 1;
-  int _selectedResume = 0;
+  int _selectedResume = -1;
+  @override
+  void initState() {
+    super.initState();
+    fetchResumes();
+  }
+
+  Future<void> fetchResumes() async {
+    try {
+      setState(() => isLoading = true);
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/resume/fetch-my-resumes.php",
+        body: {},
+      );
+      if (!dataResult['error']) {
+        resumeList = dataResult['response'];
+      }
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> applyForVacancy() async {
+    try {
+      setState(() => isLoading = true);
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/application/apply-for-vacancy.php",
+        body: {
+          "vacancyId": widget.vacancyDetail['id'],
+          "resumeId": resumeList[_selectedResume]['id'],
+        },
+      );
+      if (!dataResult['error']) {
+        kSnackBar(context,
+            content: dataResult['message'], isDanger: dataResult['error']);
+      } else {
+        kSnackBar(context,
+            content: dataResult['message'], isDanger: dataResult['error']);
+      }
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: kAppBar(context, title: 'Submit Application'),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Apply to',
-              style: TextStyle(
-                fontSize: sdp(context, 11),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            height10,
-            _projectDetailsCard(context),
-            height20,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Select saved resume',
-                  style: TextStyle(
-                    fontSize: sdp(context, 11),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                CircleAvatar(
-                  radius: 15,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.add),
+                _projectDetailsCard(context),
+                height20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Select saved resume',
+                      style: TextStyle(
+                        fontSize: sdp(context, 11),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
+                    CircleAvatar(
+                      radius: 15,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: IconButton(
+                          onPressed: () {
+                            navPush(context, UploadResumeUI());
+                          },
+                          icon: Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+                height10,
+                Column(
+                  children: List.generate(resumeList.length, (index) {
+                    return _resumeTile(index);
+                  }),
+                )
               ],
             ),
-            height10,
-            _resumeTile(0),
-            _resumeTile(1),
-            _resumeTile(2),
-          ],
-        ),
+          ),
+          isLoading ? fullScreenLoading(context) : SizedBox()
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 10),
         child: ElevatedButton(
           onPressed: () {
-            navPush(context, ProposalUI());
+            if (_selectedResume >= 0) {
+              applyForVacancy();
+            } else {
+              kSnackBar(context,
+                  content: "Please select a resume", isDanger: true);
+            }
           },
           child: Text(
-            'Send Proposal',
+            'Apply & Submit my Resume',
             style: TextStyle(
               fontWeight: FontWeight.w600,
             ),
@@ -105,21 +159,24 @@ class _ProposalUIState extends State<ProposalUI> {
             SvgPicture.asset(
               'assets/icons/resume.svg',
               height: sdp(context, 20),
+              colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
             ),
             width10,
             Text(
-              'Resume_Updated',
+              resumeList[index]['resumeName'],
               style: TextStyle(
                 fontSize: sdp(context, 10),
                 fontWeight: FontWeight.w500,
               ),
             ),
             Spacer(),
-            Icon(
-              Icons.star,
-              size: sdp(context, 12),
-              color: Colors.orange,
-            ),
+            _selectedResume == index
+                ? Icon(
+                    Icons.check,
+                    size: sdp(context, 12),
+                    color: Colors.green,
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
@@ -141,7 +198,9 @@ class _ProposalUIState extends State<ProposalUI> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nursing Assistant, Prescott Nursing and Rehab- Earn Up to \$27 an Hour',
+            widget.vacancyDetail['roleTitle'] +
+                " | " +
+                widget.vacancyDetail['companyName'],
             style: TextStyle(
               fontSize: sdp(context, 11),
               fontWeight: FontWeight.w600,
@@ -153,7 +212,7 @@ class _ProposalUIState extends State<ProposalUI> {
             children: [
               Flexible(
                 child: Text(
-                  'Posted 23 minutes ago',
+                  'Posted on ' + formatDate(widget.vacancyDetail['postDate']),
                   style: TextStyle(
                     fontSize: sdp(context, 9),
                     color: Colors.black,
@@ -163,7 +222,7 @@ class _ProposalUIState extends State<ProposalUI> {
               kBulletSeperator(),
               Flexible(
                 child: Text(
-                  'Payment Verified',
+                  'Hospital Verified',
                   style: TextStyle(
                     fontSize: sdp(context, 9),
                     color: Colors.black,
@@ -180,7 +239,7 @@ class _ProposalUIState extends State<ProposalUI> {
           ),
           height10,
           Text(
-            'As a 100% employee-owned company, we are deeply invested in enhancing the quality of every life we touch. Atrium is more than skilled nursing center, it is a center of compassion, where every heart and set of hands are committed to a common goal. We believe in extending compassion and respect to each other, to our residents and their families, and to every guest who walks through our doors.',
+            widget.vacancyDetail['companyBio'],
             style: TextStyle(
               fontSize: sdp(context, 9),
               color: Colors.black,
@@ -214,44 +273,6 @@ class _ProposalUIState extends State<ProposalUI> {
                   color: kPrimaryColor,
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget projectBidTypeBtn({String? label, required int index}) {
-    bool _isSelected = selectedBidType == index;
-    return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      onTap: () {
-        setState(() {
-          selectedBidType = index;
-        });
-      },
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: _isSelected ? kPrimaryColor : Colors.grey,
-              ),
-            ),
-            child: CircleAvatar(
-              radius: 8,
-              backgroundColor: _isSelected ? kPrimaryColor : Colors.transparent,
-            ),
-          ),
-          width5,
-          Text(
-            label!,
-            style: TextStyle(
-              color: _isSelected ? kPrimaryColor : Colors.grey,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ],

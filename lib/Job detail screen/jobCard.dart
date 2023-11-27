@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:medilink/Job%20detail%20screen/jobDetailUI.dart';
+import 'package:medilink/Job%20detail%20screen/vacancyDetailsUI.dart';
 import '../utils/colors.dart';
 import '../utils/components.dart';
 import '../utils/sdp.dart';
@@ -28,7 +28,12 @@ class _JobCardState extends State<JobCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navPush(context, JobDetailUI());
+        navPush(
+          context,
+          VacancyDetailUI(
+            vacancyId: data['id'],
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 20),
