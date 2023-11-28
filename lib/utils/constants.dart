@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 // ------------->
-const String appVersion = '1.0.2';
+const String appVersion = '1.0.3';
 // ------------->
 
 Map userData = {};
@@ -95,5 +95,6 @@ List<dynamic> statesList = [
   {"id": "0", "stateName": "Choose State", "abbr": "CS"}
 ];
 List<dynamic> resumeList = [];
+List<dynamic> recruitersList = [];
 
 // -------------------------------->

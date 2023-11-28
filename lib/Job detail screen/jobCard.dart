@@ -188,44 +188,4 @@ class _JobCardState extends State<JobCard> {
       ),
     );
   }
-
-  // Widget _attachmentCard(BuildContext context) {
-  //   return Container(
-  //     padding: EdgeInsets.all(10),
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(15),
-  //       color: Colors.grey.shade100,
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         Card(
-  //           elevation: 0,
-  //           color: Colors.black,
-  //           child: Padding(
-  //             padding: EdgeInsets.all(12),
-  //             child: SvgPicture.asset(
-  //               'assets/icons/attachment.svg',
-  //               height: sdp(context, 15),
-  //               colorFilter: kSvgColor(Colors.white),
-  //             ),
-  //           ),
-  //         ),
-  //         width10,
-  //         Expanded(
-  //           child: Text(
-  //             'Design Brief.pdf',
-  //             style: TextStyle(fontWeight: FontWeight.w600),
-  //           ),
-  //         ),
-  //         width10,
-  //         IconButton(
-  //           onPressed: () {},
-  //           icon: Icon(
-  //             Icons.file_download_outlined,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

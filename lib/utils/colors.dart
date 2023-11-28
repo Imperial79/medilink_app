@@ -7,6 +7,7 @@ ColorFilter kSvgColor(Color color) => ColorFilter.mode(color, BlendMode.srcIn);
 
 final Color kPrimaryColor = Color(0xFF0114AD);
 final Color kPrimaryColorAccent = Color.fromARGB(255, 148, 158, 244);
+final Color kPrimaryColorAccentLighter = Color.fromARGB(255, 209, 212, 247);
 final Color kScaffoldColor = Colors.white;
 final Color kPillButtonColor = Color.fromARGB(255, 6, 113, 159);
 const Color kPillColor = Color(0xFFDEE1FB);

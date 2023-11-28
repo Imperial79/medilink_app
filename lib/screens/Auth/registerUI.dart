@@ -202,117 +202,195 @@ class _RegisterUIState extends State<RegisterUI> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
+          SizedBox(
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.all(15),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hello,',
-                        style: kTitleStyle(
-                          context,
-                          fontSize: sdp(context, 20),
-                          fontWeight: FontWeight.w600,
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hello,',
+                          style: kTitleStyle(
+                            context,
+                            fontSize: sdp(context, 20),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Register as a Job Finder',
-                        style: kTitleStyle(
-                          context,
-                          fontSize: sdp(context, 13),
-                          fontWeight: FontWeight.w500,
+                        Text(
+                          'Register as a Job Finder',
+                          style: kTitleStyle(
+                            context,
+                            fontSize: sdp(context, 13),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      height20,
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: kTextField(
-                                    context,
-                                    controller: firstName,
-                                    bgColor: Colors.white,
-                                    hintText: 'John',
-                                    label: 'First Name',
-                                    keyboardType: TextInputType.text,
-                                    textCapitalization:
-                                        TextCapitalization.words,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This is empty!';
-                                      }
-                                      return null;
-                                    },
+                      ],
+                    ),
+                    height10,
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.only(bottom: 100, top: 20),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: kTextField(
+                                      context,
+                                      controller: firstName,
+                                      bgColor: Colors.white,
+                                      hintText: 'John',
+                                      label: 'First Name',
+                                      keyboardType: TextInputType.name,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
                                   ),
-                                ),
-                                width10,
-                                Flexible(
-                                  child: kTextField(
-                                    context,
-                                    controller: lastName,
-                                    bgColor: Colors.white,
-                                    hintText: 'Smith',
-                                    label: 'Last Name',
-                                    keyboardType: TextInputType.text,
-                                    textCapitalization:
-                                        TextCapitalization.words,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This is empty!';
-                                      }
-                                      return null;
-                                    },
+                                  width10,
+                                  Flexible(
+                                    child: kTextField(
+                                      context,
+                                      controller: lastName,
+                                      bgColor: Colors.white,
+                                      hintText: 'Smith',
+                                      label: 'Last Name',
+                                      keyboardType: TextInputType.name,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            height10,
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: kTextField(
-                                    context,
-                                    controller: dob,
-                                    readOnly: true,
-                                    onFieldTap: () async {
-                                      await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime(2000),
-                                        firstDate: DateTime(1970),
-                                        lastDate:
-                                            DateTime(DateTime.now().year - 18),
-                                      ).then((value) {
-                                        setState(() {
-                                          if (value != null) {
-                                            dob.text = DateFormat('yyyy-MM-dd')
-                                                .format(value)
-                                                .toString();
-                                          }
+                                ],
+                              ),
+                              height10,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: kTextField(
+                                      context,
+                                      controller: dob,
+                                      readOnly: true,
+                                      onFieldTap: () async {
+                                        await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime(2000),
+                                          firstDate: DateTime(1970),
+                                          lastDate: DateTime(
+                                              DateTime.now().year - 18),
+                                        ).then((value) {
+                                          setState(() {
+                                            if (value != null) {
+                                              dob.text =
+                                                  DateFormat('yyyy-MM-dd')
+                                                      .format(value)
+                                                      .toString();
+                                            }
+                                          });
                                         });
-                                      });
-                                    },
-                                    bgColor: Colors.white,
-                                    hintText: '1998-06-29',
-                                    label: "DOB",
-                                    keyboardType: TextInputType.datetime,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This is empty!';
-                                      }
-                                      return null;
-                                    },
+                                      },
+                                      bgColor: Colors.white,
+                                      hintText: '1998-06-29',
+                                      label: "DOB",
+                                      keyboardType: TextInputType.datetime,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
                                   ),
-                                ),
-                                width10,
-                                Flexible(
-                                  child: Container(
+                                  width10,
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Gender',
+                                          style: TextStyle(
+                                              fontSize: sdp(context, 9)),
+                                        ),
+                                        kHeight(7),
+                                        Container(
+                                          padding: EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            borderRadius: kRadius(10),
+                                            border: Border.all(
+                                                color: Colors.grey.shade400),
+                                          ),
+                                          child: DropdownButton(
+                                            value: _selectedGender,
+                                            underline: SizedBox.shrink(),
+                                            isDense: true,
+                                            isExpanded: true,
+                                            dropdownColor: Colors.white,
+                                            borderRadius: kRadius(10),
+                                            alignment: AlignmentDirectional
+                                                .bottomCenter,
+                                            elevation: 24,
+                                            padding: EdgeInsets.all(8),
+                                            icon: Icon(Icons
+                                                .keyboard_arrow_down_rounded),
+                                            iconSize: 20,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                            items: [
+                                              DropdownMenuItem(
+                                                value: 'M',
+                                                child: Text('Male'),
+                                              ),
+                                              DropdownMenuItem(
+                                                value: 'F',
+                                                child: Text('Female'),
+                                              ),
+                                              DropdownMenuItem(
+                                                value: 'O',
+                                                child: Text('Others'),
+                                              ),
+                                            ],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedGender = value!;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              height10,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Speciality',
+                                    style: TextStyle(fontSize: sdp(context, 9)),
+                                  ),
+                                  kHeight(7),
+                                  Container(
                                     padding: EdgeInsets.all(4),
                                     decoration: BoxDecoration(
                                       borderRadius: kRadius(10),
@@ -320,7 +398,7 @@ class _RegisterUIState extends State<RegisterUI> {
                                           color: Colors.grey.shade400),
                                     ),
                                     child: DropdownButton(
-                                      value: _selectedGender,
+                                      value: _selectedRole,
                                       underline: SizedBox.shrink(),
                                       isDense: true,
                                       isExpanded: true,
@@ -335,231 +413,187 @@ class _RegisterUIState extends State<RegisterUI> {
                                       iconSize: 20,
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontFamily: 'Montserrat',
+                                        fontFamily: 'Poppins',
                                       ),
-                                      items: [
-                                        DropdownMenuItem(
-                                          value: 'M',
-                                          child: Text('Male'),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 'F',
-                                          child: Text('Female'),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 'O',
-                                          child: Text('Others'),
-                                        ),
-                                      ],
+                                      items: List.generate(rolesList.length,
+                                          (index) {
+                                        return DropdownMenuItem(
+                                          value:
+                                              rolesList[index]['id'].toString(),
+                                          child:
+                                              Text(rolesList[index]['title']),
+                                        );
+                                      }),
                                       onChanged: (value) {
                                         setState(() {
-                                          _selectedGender = value!;
+                                          _selectedRole = value!;
                                         });
                                       },
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            height10,
-                            Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                borderRadius: kRadius(10),
-                                border: Border.all(color: Colors.grey.shade400),
+                                ],
                               ),
-                              child: DropdownButton(
-                                value: _selectedRole,
-                                underline: SizedBox.shrink(),
-                                isDense: true,
-                                isExpanded: true,
-                                dropdownColor: Colors.white,
-                                borderRadius: kRadius(10),
-                                alignment: AlignmentDirectional.bottomCenter,
-                                elevation: 24,
-                                padding: EdgeInsets.all(8),
-                                icon: Icon(Icons.keyboard_arrow_down_rounded),
-                                iconSize: 20,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Montserrat',
-                                ),
-                                items: List.generate(rolesList.length, (index) {
-                                  return DropdownMenuItem(
-                                    value: rolesList[index]['id'].toString(),
-                                    child: Text(rolesList[index]['title']),
-                                  );
-                                }),
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(value);
-                                    _selectedRole = value!;
-                                  });
+                              height10,
+                              kTextField(
+                                context,
+                                controller: specialization,
+                                bgColor: Colors.white,
+                                hintText: 'MBBS, MD ...',
+                                label: "Specialization",
+                                keyboardType: TextInputType.text,
+                                textCapitalization:
+                                    TextCapitalization.characters,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'This field is required!';
+                                  }
+                                  return null;
                                 },
                               ),
-                            ),
-                            height10,
-                            kTextField(
-                              context,
-                              controller: specialization,
-                              bgColor: Colors.white,
-                              hintText: 'MBBS, MD ...',
-                              label: "Specialization",
-                              keyboardType: TextInputType.text,
-                              textCapitalization: TextCapitalization.words,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This is empty!';
-                                }
-                                return null;
-                              },
-                            ),
-                            height10,
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: kTextField(
-                                    context,
-                                    controller: city,
-                                    bgColor: Colors.white,
-                                    hintText: 'Bengaluru, Mumbai',
-                                    label: "City",
-                                    keyboardType: TextInputType.text,
-                                    textCapitalization:
-                                        TextCapitalization.words,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This is empty!';
-                                      }
-                                      return null;
-                                    },
+                              height10,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: kTextField(
+                                      context,
+                                      controller: city,
+                                      bgColor: Colors.white,
+                                      hintText: 'Bengaluru, Mumbai',
+                                      label: "City",
+                                      keyboardType: TextInputType.text,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
                                   ),
-                                ),
-                                width10,
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'State',
-                                        style: TextStyle(
-                                            fontSize: sdp(context, 9)),
-                                      ),
-                                      kHeight(7),
-                                      Container(
-                                        padding: EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          borderRadius: kRadius(10),
-                                          border: Border.all(
-                                              color: Colors.grey.shade400),
-                                        ),
-                                        child: DropdownButton(
-                                          value: _selectedState,
-                                          underline: SizedBox.shrink(),
-                                          isDense: true,
-                                          isExpanded: true,
-                                          dropdownColor: Colors.white,
-                                          borderRadius: kRadius(10),
-                                          menuMaxHeight: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .5,
-                                          alignment:
-                                              AlignmentDirectional.bottomCenter,
-                                          elevation: 24,
-                                          padding: EdgeInsets.all(8),
-                                          icon: Icon(Icons
-                                              .keyboard_arrow_down_rounded),
-                                          iconSize: 20,
+                                  width10,
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'State',
                                           style: TextStyle(
-                                            color: Colors.black,
-                                            fontFamily: 'Montserrat',
-                                          ),
-                                          items: List.generate(
-                                              statesList.length, (index) {
-                                            return DropdownMenuItem(
-                                              value: statesList[index]
-                                                      ['stateName']
-                                                  .toString(),
-                                              child: Text(statesList[index]
-                                                  ['stateName']),
-                                            );
-                                          }),
-                                          onChanged: (value) {
-                                            setState(
-                                              () {
-                                                print(value);
-                                                _selectedState = value!;
-                                              },
-                                            );
-                                          },
+                                              fontSize: sdp(context, 9)),
                                         ),
-                                      ),
-                                    ],
+                                        kHeight(7),
+                                        Container(
+                                          padding: EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            borderRadius: kRadius(10),
+                                            border: Border.all(
+                                                color: Colors.grey.shade400),
+                                          ),
+                                          child: DropdownButton(
+                                            value: _selectedState,
+                                            underline: SizedBox.shrink(),
+                                            isDense: true,
+                                            isExpanded: true,
+                                            dropdownColor: Colors.white,
+                                            borderRadius: kRadius(10),
+                                            menuMaxHeight:
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .5,
+                                            alignment: AlignmentDirectional
+                                                .bottomCenter,
+                                            elevation: 24,
+                                            padding: EdgeInsets.all(8),
+                                            icon: Icon(Icons
+                                                .keyboard_arrow_down_rounded),
+                                            iconSize: 20,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                            items: List.generate(
+                                                statesList.length, (index) {
+                                              return DropdownMenuItem(
+                                                value: statesList[index]
+                                                        ['stateName']
+                                                    .toString(),
+                                                child: Text(statesList[index]
+                                                    ['stateName']),
+                                              );
+                                            }),
+                                            onChanged: (value) {
+                                              setState(
+                                                () {
+                                                  _selectedState = value!;
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            height10,
-                            kTextField(
-                              context,
-                              controller: address,
-                              bgColor: Colors.white,
-                              hintText: 'Street',
-                              label: "Address",
-                              keyboardType: TextInputType.text,
-                              textCapitalization: TextCapitalization.words,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This is empty!';
-                                }
-                                return null;
-                              },
-                            ),
-                            height10,
-                            kTextField(
-                              context,
-                              controller: email,
-                              readOnly: widget.type == "Email",
-                              bgColor: Colors.white,
-                              hintText: 'someone@example.com',
-                              label: "Email",
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This is empty!';
-                                }
-                                return null;
-                              },
-                            ),
-                            height10,
-                            kTextField(
-                              context,
-                              controller: phone,
-                              prefixText: "+91 ",
-                              readOnly: widget.type == "Phone",
-                              bgColor: Colors.white,
-                              hintText: '9XXXXXXX556',
-                              label: "Phone",
-                              maxLength: 10,
-                              keyboardType: TextInputType.phone,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This is empty!';
-                                }
-                                return null;
-                              },
-                            ),
-                          ],
+                                ],
+                              ),
+                              height10,
+                              kTextField(
+                                context,
+                                controller: address,
+                                bgColor: Colors.white,
+                                hintText: 'Street',
+                                label: "Address",
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.words,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'This field is required!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              height10,
+                              kTextField(
+                                context,
+                                controller: email,
+                                readOnly: widget.type == "Email",
+                                bgColor: Colors.white,
+                                hintText: 'someone@example.com',
+                                label: "Email",
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'This field is required!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              height10,
+                              kTextField(
+                                context,
+                                controller: phone,
+                                prefixText: "+91 ",
+                                readOnly: widget.type == "Phone",
+                                bgColor: Colors.white,
+                                hintText: '9XXXXXXX556',
+                                label: "Phone",
+                                maxLength: 10,
+                                keyboardType: TextInputType.phone,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'This field is required!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: 100,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -570,7 +604,7 @@ class _RegisterUIState extends State<RegisterUI> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {

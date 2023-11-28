@@ -99,7 +99,7 @@ class _DashboardUIState extends State<DashboardUI> {
                 ),
                 kNavigationButton(
                   index: 1,
-                  icon: 'chat',
+                  icon: 'hospital',
                   label: 'Recruiters',
                 ),
                 kNavigationButton(
@@ -165,45 +165,67 @@ class _DashboardUIState extends State<DashboardUI> {
       builder: (context) {
         return Dialog(
           elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: kRadius(10),
+            side: BorderSide(color: Colors.grey.shade400),
+          ),
+          backgroundColor: Colors.white,
           child: Container(
             padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
-                colors: [
-                  Colors.lightBlueAccent,
-                  Colors.lightGreenAccent,
-                ],
-              ),
-            ),
+            // decoration: BoxDecoration(
+            //   borderRadius: kRadius(10),
+            //   border: Border.all(color: Colors.grey.shade400),
+            // ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.close),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Quick Survey',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: sdp(context, 12)),
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Skip'),
+                    ),
+                  ],
                 ),
+                height10,
                 Text(
                   data['question'],
                 ),
-                height10,
+                height15,
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MaterialButton(
                       onPressed: () {
                         surveyResponse(data['id'], "Yes");
                       },
+                      elevation: 0,
+                      color: kPrimaryColorAccentLighter,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: kRadius(10),
+                        side: BorderSide(color: kPrimaryColor),
+                      ),
                       child: Text("Yes"),
                     ),
                     MaterialButton(
                       onPressed: () {
                         surveyResponse(data['id'], "No");
                       },
+                      elevation: 0,
+                      color: Colors.red.shade100,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: kRadius(10),
+                        side: BorderSide(color: Colors.red),
+                      ),
                       child: Text("No"),
                     )
                   ],

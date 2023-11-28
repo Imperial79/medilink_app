@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
+import 'package:medilink/screens/confirmationUI.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -56,6 +57,7 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
       if (!dataResult['error']) {
         kSnackBar(context,
             content: dataResult['message'], isDanger: dataResult['error']);
+        navPushReplacement(context, ConfirmationUI());
       } else {
         kSnackBar(context,
             content: dataResult['message'], isDanger: dataResult['error']);
@@ -77,7 +79,7 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _projectDetailsCard(context),
+                _jobDetailsCard(context),
                 height20,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +97,8 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
                         fit: BoxFit.contain,
                         child: IconButton(
                           onPressed: () {
-                            navPush(context, UploadResumeUI());
+                            navPush(context, UploadResumeUI())
+                                .then((value) => fetchResumes());
                           },
                           icon: Icon(Icons.add),
                         ),
@@ -150,8 +153,11 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
         margin: EdgeInsets.only(bottom: 10),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         decoration: BoxDecoration(
-          color: isActive ? kPillColor.withOpacity(0.7) : Colors.grey.shade100,
-          border: Border.all(color: isActive ? kPrimaryColor : Colors.grey),
+          color: isActive
+              ? kPillColor.withOpacity(0.7)
+              : Colors.grey.shade100.withOpacity(.6),
+          border: Border.all(
+              color: isActive ? kPrimaryColorAccent : Colors.grey.shade100),
           borderRadius: kRadius(10),
         ),
         child: Row(
@@ -159,22 +165,24 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
             SvgPicture.asset(
               'assets/icons/resume.svg',
               height: sdp(context, 20),
-              colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
+              colorFilter: kSvgColor(
+                isActive ? Colors.red : Colors.red.shade200,
+              ),
             ),
             width10,
             Text(
               resumeList[index]['resumeName'],
               style: TextStyle(
-                fontSize: sdp(context, 10),
-                fontWeight: FontWeight.w500,
-              ),
+                  fontSize: sdp(context, 10),
+                  fontWeight: FontWeight.w500,
+                  color: isActive ? Colors.black : Colors.grey.shade500),
             ),
             Spacer(),
             _selectedResume == index
                 ? Icon(
-                    Icons.check,
-                    size: sdp(context, 12),
-                    color: Colors.green,
+                    Icons.check_circle,
+                    size: sdp(context, 16),
+                    color: kPrimaryColor,
                   )
                 : SizedBox.shrink(),
           ],
@@ -183,7 +191,7 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
     );
   }
 
-  Widget _projectDetailsCard(BuildContext context) {
+  Widget _jobDetailsCard(BuildContext context) {
     return Container(
       margin: EdgeInsets.zero,
       padding: EdgeInsets.all(15),
@@ -239,11 +247,16 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
           ),
           height10,
           Text(
-            widget.vacancyDetail['companyBio'],
+            'Requirements',
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          height5,
+          Text(
+            widget.vacancyDetail['requirements'],
             style: TextStyle(
               fontSize: sdp(context, 9),
               color: Colors.black,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
             maxLines: readLess ? 2 : 200,
             overflow: TextOverflow.ellipsis,

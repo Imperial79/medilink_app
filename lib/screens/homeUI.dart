@@ -325,20 +325,6 @@ class _HomeUIState extends State<HomeUI> {
                 height20,
                 subHeading('Preferred Location'),
                 height10,
-                // SingleChildScrollView(
-                //   padding: EdgeInsets.symmetric(horizontal: 20),
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: [
-                //       filterBtn(setState, label: 'Canada', type: 'location'),
-                //       filterBtn(setState,
-                //           label: 'United States', type: 'location'),
-                //       filterBtn(setState, label: 'Hong Kong', type: 'location'),
-                //       filterBtn(setState, label: 'India', type: 'location'),
-                //       filterBtn(setState, label: 'Ukraine', type: 'location'),
-                //     ],
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   child: Row(

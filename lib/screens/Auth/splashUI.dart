@@ -53,9 +53,18 @@ class _SplashUIState extends State<SplashUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Lottie.asset(
-          'assets/icons/loading-animation.json',
-          height: sdp(context, 200),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Lottie.asset(
+              'assets/icons/loading-animation.json',
+              height: sdp(context, 100),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(26.0),
+              child: Image.asset('assets/images/medilink-logo-square.jpg'),
+            )
+          ],
         ),
       ),
     );

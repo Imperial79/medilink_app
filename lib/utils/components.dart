@@ -296,12 +296,19 @@ Widget kTextField(
               textCapitalization: textCapitalization,
               decoration: InputDecoration(
                 prefixText: prefixText,
+                prefixStyle: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
                 counterText: '',
                 filled: true,
                 fillColor: bgColor,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: kRadius(10),
                   borderSide: BorderSide(color: kPrimaryColor),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: kRadius(10),
+                  borderSide: BorderSide(color: Colors.red),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: kRadius(10),
@@ -312,7 +319,7 @@ Widget kTextField(
                   borderSide: BorderSide(color: Colors.red.shade400),
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 13),
                 hintText: hintText,
                 hintStyle: TextStyle(
                   color: Colors.grey.shade400,
@@ -355,6 +362,7 @@ void kSnackBar(
   required String content,
   bool? isDanger = false,
 }) {
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       backgroundColor: isDanger! ? kDangerColor : kPrimaryColor,
