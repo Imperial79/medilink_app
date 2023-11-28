@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medilink/dashboardUI.dart';
-import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -146,7 +145,6 @@ class _RegisterUIState extends State<RegisterUI> {
     try {
       await OneSignal.shared.getDeviceState().then((value) async {
         var fcmToken = value!.userId!;
-        // print("FCM" + fcmToken.toString());
         body = {
           "firstName": firstName.text,
           "lastName": lastName.text,
@@ -625,54 +623,6 @@ class _RegisterUIState extends State<RegisterUI> {
           ),
         ),
       ),
-    );
-  }
-
-  Row kTextFieldThis(
-    BuildContext context, {
-    TextEditingController? controller,
-    Widget? prefix,
-    required String hintText,
-    bool obscureText = false,
-    Widget? suffix,
-  }) {
-    return Row(
-      children: [
-        prefix != null
-            ? Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: CircleAvatar(
-                  radius: 25,
-                  backgroundColor: kPrimaryColorAccent,
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: FittedBox(child: prefix),
-                  ),
-                ),
-              )
-            : SizedBox(),
-        Flexible(
-          child: TextField(
-            controller: controller,
-            obscureText: obscureText,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: sdp(context, 20),
-                fontWeight: FontWeight.w600),
-            cursorColor: Colors.white,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              suffix: suffix,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                color: kPrimaryColorAccent,
-                fontSize: sdp(context, 20),
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

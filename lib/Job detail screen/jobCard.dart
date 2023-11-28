@@ -8,7 +8,7 @@ import '../utils/sdp.dart';
 
 class JobCard extends StatefulWidget {
   final data;
-  const JobCard({super.key, this.data});
+  const JobCard({super.key, required this.data});
 
   @override
   State<JobCard> createState() => _JobCardState(data: data);

@@ -36,6 +36,7 @@ class _HomeUIState extends State<HomeUI> {
   }
 
   Future<void> pullRefresher() async {
+    pageNo = 0;
     vacancyList = [];
     await fetchJobVacancies();
   }
@@ -70,25 +71,30 @@ class _HomeUIState extends State<HomeUI> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            _hero(context),
-            height10,
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: pullRefresher,
-                child: ListView.builder(
-                  itemCount: vacancyList.length,
-                  shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return JobCard(data: vacancyList[index]);
-                  },
-                ),
-              ),
-            )
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _hero(context),
+                height10,
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: pullRefresher,
+                    child: ListView.builder(
+                      itemCount: vacancyList.length,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return JobCard(data: vacancyList[index]);
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
+            isLoading ? fullScreenLoading(context) : SizedBox()
           ],
         ),
       ),
@@ -394,7 +400,6 @@ class _HomeUIState extends State<HomeUI> {
                                 onChanged: (value) {
                                   setState(
                                     () {
-                                      print(value);
                                       _selectedState = value!;
                                     },
                                   );

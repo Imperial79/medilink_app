@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medilink/Job%20detail%20screen/jobCard.dart';
 // import 'package:medilink/Job%20Card/jobCard.dart';
 import 'package:medilink/utils/components.dart';
+import 'package:medilink/utils/constants.dart';
 
 class SavedUI extends StatefulWidget {
   const SavedUI({super.key});
@@ -10,7 +12,43 @@ class SavedUI extends StatefulWidget {
 }
 
 class _SavedUIState extends State<SavedUI> {
+  bool isLoading = false;
+  int pageNo = 0;
+
   @override
+  void initState() {
+    super.initState();
+    pageNo = 0;
+    bookmarkedVacancies = [];
+    fetchBookmarkedVacancies();
+  }
+
+  Future<void> pullRefresher() async {
+    pageNo = 0;
+    bookmarkedVacancies = [];
+    await fetchBookmarkedVacancies();
+  }
+
+  Future<void> fetchBookmarkedVacancies() async {
+    try {
+      setState(() => isLoading = true);
+
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/vacancy/fetch-bookmarked-vacancies.php",
+        body: {
+          "pageNo": pageNo,
+        },
+      );
+      if (!dataResult['error']) {
+        bookmarkedVacancies.addAll(dataResult['response']);
+      }
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,16 +63,19 @@ class _SavedUIState extends State<SavedUI> {
                 title: 'Saved',
                 subtitle: 'Find your saved or bookmarked job profiles here',
               ),
-              // height20,
-              // Expanded(
-              //   child: ListView.builder(
-              //     itemCount: 5,
-              //     shrinkWrap: true,
-              //     itemBuilder: (context, index) {
-              //       return JobCard();
-              //     },
-              //   ),
-              // ),
+              height20,
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: pullRefresher,
+                  child: ListView.builder(
+                    itemCount: bookmarkedVacancies.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return JobCard(data: bookmarkedVacancies[index]);
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),

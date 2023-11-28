@@ -28,6 +28,12 @@ class _RecruitersUIState extends State<RecruitersUI> {
     fetchRecruiters();
   }
 
+  Future<void> pullRefresher() async {
+    pageNo = 0;
+    recruitersList = [];
+    await fetchRecruiters();
+  }
+
   Future<void> fetchRecruiters() async {
     try {
       setState(() => isLoading = true);
@@ -67,20 +73,28 @@ class _RecruitersUIState extends State<RecruitersUI> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            _hero(context),
-            kHeight(10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: recruitersList.length,
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                itemBuilder: (context, index) {
-                  return recruiterCard(recruitersList[index]);
-                },
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _hero(context),
+                kHeight(10),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: pullRefresher,
+                    child: ListView.builder(
+                      itemCount: recruitersList.length,
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      itemBuilder: (context, index) {
+                        return recruiterCard(recruitersList[index]);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
+            isLoading ? fullScreenLoading(context) : SizedBox()
           ],
         ),
       ),
@@ -322,7 +336,6 @@ class _RecruitersUIState extends State<RecruitersUI> {
                                 onChanged: (value) {
                                   setState(
                                     () {
-                                      print(value);
                                       _selectedState = value!;
                                     },
                                   );

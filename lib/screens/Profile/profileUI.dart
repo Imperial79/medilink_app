@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/dashboardUI.dart';
+import 'package:medilink/screens/Profile/editProfileUI.dart';
 import 'package:medilink/screens/Profile/myApplicationsUI.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
 import 'package:medilink/screens/Auth/welcomeUI.dart';
@@ -62,7 +63,7 @@ class _ProfileUIState extends State<ProfileUI> {
                           height5,
                           InkWell(
                             onTap: () {
-                              // NavPush(context, EditProfileUI());
+                              navPush(context, EditProfileUI());
                             },
                             borderRadius: kRadius(100),
                             child: Padding(

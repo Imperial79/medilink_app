@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/Job%20detail%20screen/vacancyDetailsUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
+import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 class MyApplicationsUI extends StatefulWidget {
@@ -13,31 +14,86 @@ class MyApplicationsUI extends StatefulWidget {
 }
 
 class _MyApplicationsUIState extends State<MyApplicationsUI> {
+  bool isLoading = false;
+  int pageNo = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    pageNo = 0;
+    appliedVacancies = [];
+    fetchAppliedVacancies();
+  }
+
+  Future<void> pullRefresher() async {
+    pageNo = 0;
+    appliedVacancies = [];
+    await fetchAppliedVacancies();
+  }
+
+  Future<void> fetchAppliedVacancies() async {
+    try {
+      setState(() => isLoading = true);
+
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/application/fetch-applied-applications.php",
+        body: {
+          "pageNo": pageNo,
+        },
+      );
+      if (!dataResult['error']) {
+        appliedVacancies.addAll(dataResult['response']);
+      }
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: kAppBar(context, title: 'Applied Jobs'),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: 2,
-          shrinkWrap: true,
-          padding: EdgeInsets.all(15),
-          itemBuilder: (context, index) {
-            return _appliedJobsCard({});
-          },
+        child: Stack(
+          children: [
+            RefreshIndicator(
+              onRefresh: pullRefresher,
+              child: ListView.builder(
+                itemCount: appliedVacancies.length,
+                shrinkWrap: true,
+                padding: EdgeInsets.all(15),
+                itemBuilder: (context, index) {
+                  return _appliedJobsCard(appliedVacancies[index]);
+                },
+              ),
+            ),
+            isLoading ? fullScreenLoading(context) : SizedBox()
+          ],
         ),
       ),
     );
   }
 
   Widget _appliedJobsCard(var data) {
+    Color statusBgColor = Colors.red;
+    if (data['status'] == 'Applied') {
+      statusBgColor = Colors.yellow;
+    } else if (data['status'] == 'In-Review') {
+      statusBgColor = Colors.purple;
+    } else if (data['status'] == 'Selected') {
+      statusBgColor = Colors.green;
+    }
+
     return GestureDetector(
       onTap: () {
         navPush(
-            context,
-            VacancyDetailUI(
-              vacancyId: data['id'],
-            ));
+          context,
+          VacancyDetailUI(
+            vacancyId: data['vacancyId'],
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),
@@ -55,7 +111,7 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                   width: sdp(context, 50),
                   height: sdp(context, 50),
                   child: Image.network(
-                    'https://hospitalcareers.com/files/pictures/emp_logo_2858.jpg',
+                    data['companyImage'],
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -65,7 +121,7 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Front Office Admin Support - On cology, Bangalore, India',
+                        data['roleTitle'] + ' | ' + data['companyName'],
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: sdp(context, 9)),
@@ -74,7 +130,7 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                       ),
                       height10,
                       Text(
-                        'Come to Memphis and join a very busy practice seeking to replace a retiring physician. We seek a well-trained interventional cardiologist for a full-time, employed position. Due to tremendous community need this is an excellent opportunity for candidates looking to hit the ground running an',
+                        data['requirements'],
                         style: TextStyle(
                           fontSize: sdp(context, 9),
                         ),
@@ -92,19 +148,19 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                 statsCard(
                   context,
                   label: 'Salary',
-                  content: 'Rs. 20 LPA',
+                  content: data['salary'],
                 ),
                 width5,
                 statsCard(
                   context,
-                  label: 'Pos.',
-                  content: 'Physicist',
+                  label: 'Position',
+                  content: data['roleTitle'],
                 ),
                 width5,
                 statsCard(
                   context,
                   label: 'Experience',
-                  content: '3-4 Yrs',
+                  content: data['experience'],
                 ),
               ],
             ),
@@ -121,12 +177,23 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                 ),
                 width10,
                 Text(
-                  'Resume_updated.pdf',
+                  data['resumeName'],
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: sdp(context, 9),
                   ),
                 ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: statusBgColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    data['status'],
+                  ),
+                )
               ],
             )
           ],

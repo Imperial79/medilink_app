@@ -96,5 +96,7 @@ List<dynamic> statesList = [
 ];
 List<dynamic> resumeList = [];
 List<dynamic> recruitersList = [];
+List<dynamic> appliedVacancies = [];
+List<dynamic> bookmarkedVacancies = [];
 
 // -------------------------------->

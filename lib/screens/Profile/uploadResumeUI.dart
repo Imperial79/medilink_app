@@ -7,7 +7,6 @@ import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UploadResumeUI extends StatefulWidget {
@@ -26,6 +25,11 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
   void initState() {
     super.initState();
     fetchResumes();
+  }
+
+  Future<void> pullRefresher() async {
+    resumeList = [];
+    await fetchResumes();
   }
 
   _selectFile() async {
@@ -79,10 +83,6 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
     setState(() => isLoading = false);
   }
 
-  _openPdf(String path) async {
-    await OpenFilex.open(path);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,19 +94,20 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: resumeList.length == 0
-                        ? _noResumes(context)
-                        : Column(
-                            children: List.generate(
-                              resumeList.length,
-                              (index) {
-                                return _resumeTile(resumeList[index]);
-                              },
-                            ),
+                  child: resumeList.length == 0
+                      ? _noResumes(context)
+                      : RefreshIndicator(
+                          onRefresh: pullRefresher,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: resumeList.length,
+                            itemBuilder: (context, index) {
+                              return _resumeTile(resumeList[index]);
+                            },
                           ),
-                  ),
+                        ),
                 ),
                 height10,
                 Padding(
@@ -199,43 +200,38 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
 
   Widget _resumeTile(var data) {
     // String _fileName = data.path.split('/').last;
-    return GestureDetector(
-      onTap: () {
-        _openPdf(data.path);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade400),
-          borderRadius: kRadius(15),
-        ),
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              'assets/icons/resume.svg',
-              colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
-              height: sdp(context, 20),
-            ),
-            width10,
-            Expanded(
-              child: Text(
-                data['resumeName'],
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade400),
+        borderRadius: kRadius(15),
+      ),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            'assets/icons/resume.svg',
+            colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
+            height: sdp(context, 20),
+          ),
+          width10,
+          Expanded(
+            child: Text(
+              data['resumeName'],
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
               ),
             ),
-            IconButton(
-              onPressed: () async {
-                if (!await launchUrl(Uri.parse(data['resume']))) {
-                  throw Exception('Could not launch');
-                }
-              },
-              icon: Icon(Icons.file_download_outlined),
-            ),
-          ],
-        ),
+          ),
+          IconButton(
+            onPressed: () async {
+              if (!await launchUrl(Uri.parse(data['resume']))) {
+                throw Exception('Could not launch');
+              }
+            },
+            icon: Icon(Icons.file_download_outlined),
+          ),
+        ],
       ),
     );
   }

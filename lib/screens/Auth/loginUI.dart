@@ -74,8 +74,6 @@ class _LoginUIState extends State<LoginUI> {
       },
     );
 
-    print(dataResult);
-
     if (!dataResult['error']) {
       setState(() {
         if (dataResult['action'] == 'Register') {
@@ -126,7 +124,6 @@ class _LoginUIState extends State<LoginUI> {
     try {
       await OneSignal.shared.getDeviceState().then((value) async {
         var fcmToken = value!.userId!;
-        // print("FCM" + fcmToken.toString());
         body = {
           "phone": phone.text,
           "otp": otp,
@@ -220,7 +217,6 @@ class _LoginUIState extends State<LoginUI> {
       setState(() => isLoading = false);
     } catch (e) {
       setState(() => isLoading = false);
-      print(e);
     }
   }
 

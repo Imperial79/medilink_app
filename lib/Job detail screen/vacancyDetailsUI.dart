@@ -47,7 +47,6 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
       }
       setState(() => isLoading = false);
     } catch (e) {
-      print(e);
       setState(() => isLoading = false);
     }
   }
