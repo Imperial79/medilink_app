@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/Job%20detail%20screen/vacancyDetailsUI.dart';
+import 'package:medilink/utils/constants.dart';
 import '../utils/colors.dart';
 import '../utils/components.dart';
 import '../utils/sdp.dart';
@@ -22,6 +23,18 @@ class _JobCardState extends State<JobCard> {
   void initState() {
     super.initState();
     tagsList = data['tags'].split("#");
+  }
+
+  Future<void> bookmarkVacancy(vacancyId) async {
+    try {
+      await apiCallBack(
+        method: "POST",
+        path: "/vacancy/bookmark-vacancy.php",
+        body: {
+          "vacancyId": vacancyId,
+        },
+      );
+    } catch (e) {}
   }
 
   @override
@@ -72,9 +85,21 @@ class _JobCardState extends State<JobCard> {
                   //   ),
                   // ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      bookmarkVacancy(data['id']);
+                      setState(() {
+                        data['isBookmarked'] =
+                            data['isBookmarked'] == 'true' ? 'false' : 'true';
+                      });
+                      kSnackBar(context,
+                          content: data['isBookmarked'] == 'true'
+                              ? "Bookmarked Vacancy"
+                              : "Removed from bookmark");
+                    },
                     icon: SvgPicture.asset(
-                      'assets/icons/saved.svg',
+                      data['isBookmarked'] == 'true'
+                          ? 'assets/icons/saved-filled.svg'
+                          : 'assets/icons/saved.svg',
                       height: sdp(context, 15),
                     ),
                   ),

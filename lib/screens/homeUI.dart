@@ -36,6 +36,7 @@ class _HomeUIState extends State<HomeUI> {
   }
 
   Future<void> pullRefresher() async {
+    vacancyList = [];
     await fetchJobVacancies();
   }
 
@@ -51,7 +52,8 @@ class _HomeUIState extends State<HomeUI> {
           "searchKey": searchKey.text,
           "city": city.text,
           "state": state,
-          "distanceRange": selectedDistanceRange
+          "distanceRange": selectedDistanceRange,
+          "roleId": userData['roleId'],
         },
       );
       if (!dataResult['error']) {
