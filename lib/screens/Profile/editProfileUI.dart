@@ -82,11 +82,8 @@ class _EditProfileUIState extends State<EditProfileUI> {
             ),
           },
         );
-        if (!dataResult['error']) {
-        } else {
-          setState(() => isLoading = false);
-          kSnackBar(context, content: dataResult['message'], isDanger: true);
-        }
+        kSnackBar(context,
+            content: dataResult['message'], isDanger: dataResult['error']);
         setState(() => isLoading = false);
       } catch (e) {
         setState(() => isLoading = false);
@@ -156,27 +153,29 @@ class _EditProfileUIState extends State<EditProfileUI> {
                         child: Center(
                           child: _image != null
                               ? Container(
-                                  height: sdp(context, 60),
-                                  width: sdp(context, 60),
                                   decoration: BoxDecoration(
-                                    borderRadius: kRadius(50),
-                                    image: DecorationImage(
-                                      image: FileImage(
-                                        File(_image!.path),
-                                      ),
-                                      fit: BoxFit.cover,
+                                    shape: BoxShape.circle,
+                                    color: Colors.purple.shade100,
+                                  ),
+                                  padding: EdgeInsets.all(5),
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: FileImage(
+                                      File(_image!.path),
                                     ),
                                   ),
                                 )
                               : Container(
-                                  height: sdp(context, 60),
-                                  width: sdp(context, 60),
                                   decoration: BoxDecoration(
-                                    borderRadius: kRadius(50),
+                                    shape: BoxShape.circle,
+                                    color: Colors.purple.shade100,
                                   ),
-                                  child: Image.network(
-                                    userData['image'],
-                                    fit: BoxFit.cover,
+                                  padding: EdgeInsets.all(5),
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                      userData['image'],
+                                    ),
                                   ),
                                 ),
                         ),

@@ -199,8 +199,15 @@ class _HomeUIState extends State<HomeUI> {
               activeTabGlobal.value = 3;
             });
           },
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(userData['image']),
+          child: Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.purple.shade100,
+              shape: BoxShape.circle,
+            ),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(userData['image']),
+            ),
           ),
         ),
       ],

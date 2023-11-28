@@ -54,19 +54,26 @@ class _ProfileUIState extends State<ProfileUI> {
                   height20,
                   Row(
                     children: [
-                      Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 22,
-                            backgroundImage: NetworkImage(userData['image']),
-                          ),
-                          height5,
-                          InkWell(
-                            onTap: () {
-                              navPush(context, EditProfileUI());
-                            },
-                            borderRadius: kRadius(100),
-                            child: Padding(
+                      GestureDetector(
+                        onTap: () {
+                          navPush(context, EditProfileUI());
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.purple.shade100,
+                                shape: BoxShape.circle,
+                              ),
+                              child: CircleAvatar(
+                                radius: 22,
+                                backgroundImage:
+                                    NetworkImage(userData['image']),
+                              ),
+                            ),
+                            kHeight(2),
+                            Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               child: Text(
@@ -77,8 +84,8 @@ class _ProfileUIState extends State<ProfileUI> {
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       width20,
                       Expanded(
