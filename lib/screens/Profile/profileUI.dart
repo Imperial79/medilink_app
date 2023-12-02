@@ -52,15 +52,15 @@ class _ProfileUIState extends State<ProfileUI> {
                 children: [
                   kPageHeader(context, title: 'Profile'),
                   height20,
-                  Row(
+                  Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          navPush(context, EditProfileUI());
-                        },
-                        child: Column(
-                          children: [
-                            Container(
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              navPush(context, EditProfileUI());
+                            },
+                            child: Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: Colors.purple.shade100,
@@ -72,49 +72,59 @@ class _ProfileUIState extends State<ProfileUI> {
                                     NetworkImage(userData['image']),
                               ),
                             ),
-                            kHeight(2),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              child: Text(
-                                'Edit',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: kPrimaryColor,
+                          ),
+                          width20,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userData['firstName'] +
+                                      " " +
+                                      userData['lastName'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: sdp(context, 11),
+                                  ),
                                 ),
-                              ),
+                                Text(
+                                  userData['roleTitle'].toString() +
+                                      ' | ' +
+                                      userData['specialization'].toString(),
+                                  style: TextStyle(
+                                    fontSize: sdp(context, 10),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      width20,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userData['firstName'] +
-                                  " " +
-                                  userData['lastName'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: sdp(context, 11),
-                              ),
+                      height10,
+                      GestureDetector(
+                        onTap: () {
+                          navPush(context, EditProfileUI());
+                        },
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: kPrimaryColorAccentLighter,
+                            borderRadius: kRadius(15),
+                          ),
+                          child: Text(
+                            'Edit Profile',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: kPrimaryColor,
                             ),
-                            Text(
-                              userData['roleTitle'].toString() +
-                                  ' | ' +
-                                  userData['specialization'].toString(),
-                              style: TextStyle(
-                                fontSize: sdp(context, 10),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  // kHeight(40),
                   height10,
                   Row(
                     children: [

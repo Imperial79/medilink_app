@@ -125,7 +125,7 @@ class _DashboardUIState extends State<DashboardUI> {
                 kNavigationButton(
                   index: 3,
                   icon: 'profile',
-                  label: 'Profile',
+                  label: userData['firstName'] + 'djdjdjdjdjdjdj',
                 ),
               ],
             ),
@@ -160,12 +160,18 @@ class _DashboardUIState extends State<DashboardUI> {
               ),
             ),
             height5,
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: sdp(context, 9),
-                color: _isSelected ? kPrimaryColor : kPrimaryColorAccent,
-                fontWeight: _isSelected ? FontWeight.w600 : FontWeight.w500,
+            SizedBox(
+              width: 80,
+              child: Center(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: sdp(context, 9),
+                    color: _isSelected ? kPrimaryColor : kPrimaryColorAccent,
+                    fontWeight: _isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ],
