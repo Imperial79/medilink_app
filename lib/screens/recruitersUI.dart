@@ -18,14 +18,29 @@ class _RecruitersUIState extends State<RecruitersUI> {
   int pageNo = 0;
   final searchKey = TextEditingController();
   final city = TextEditingController(text: userData['city']);
-  String state = '';
-  String selectedDistanceRange = '0 - 10';
-  String _selectedState = statesList[0]['stateName'];
+  String selectedState = userData['state'];
+  final scrollController = new ScrollController();
 
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(_scrollListener);
     fetchRecruiters();
+  }
+
+  _scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange) {
+      print("At bottom");
+      pageNo += 1;
+      fetchRecruiters();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    searchKey.dispose();
   }
 
   Future<void> pullRefresher() async {
@@ -41,14 +56,15 @@ class _RecruitersUIState extends State<RecruitersUI> {
         method: "POST",
         path: "/recruiters/fetch-recruiters.php",
         body: {
-          "pageNo": 0,
-          "searchKey": "",
-          "city": "",
-          "state": "",
+          "pageNo": pageNo,
+          "searchKey": searchKey.text,
+          "city": city.text,
+          "state": selectedState,
         },
       );
+      print(dataResult);
       if (!dataResult['error']) {
-        recruitersList = dataResult['response'];
+        recruitersList.addAll(dataResult['response']);
       }
       setState(() => isLoading = false);
     } catch (e) {
@@ -83,13 +99,18 @@ class _RecruitersUIState extends State<RecruitersUI> {
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: pullRefresher,
-                    child: ListView.builder(
-                      itemCount: recruitersList.length,
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      itemBuilder: (context, index) {
-                        return recruiterCard(recruitersList[index]);
-                      },
-                    ),
+                    child: recruitersList.length == 0
+                        ? Center(
+                            child: Image.asset("assets/images/no-data.jpg"))
+                        : ListView.builder(
+                            controller: scrollController,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: recruitersList.length,
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            itemBuilder: (context, index) {
+                              return recruiterCard(recruitersList[index]);
+                            },
+                          ),
                   ),
                 ),
               ],
@@ -246,13 +267,10 @@ class _RecruitersUIState extends State<RecruitersUI> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // setState(
-                          //   () {
-                          //     _selectedField = '';
-                          //     _selectedLocation = '';
-                          //     selectedDistanceRange = '';
-                          //   },
-                          // );
+                          Navigator.pop(context);
+                          pageNo = 0;
+                          vacancyList = [];
+                          fetchRecruiters();
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: kPrimaryColor,
@@ -308,7 +326,7 @@ class _RecruitersUIState extends State<RecruitersUI> {
                                 border: Border.all(color: Colors.grey.shade400),
                               ),
                               child: DropdownButton(
-                                value: _selectedState,
+                                value: selectedState,
                                 underline: SizedBox.shrink(),
                                 isDense: true,
                                 menuMaxHeight:
@@ -336,7 +354,7 @@ class _RecruitersUIState extends State<RecruitersUI> {
                                 onChanged: (value) {
                                   setState(
                                     () {
-                                      _selectedState = value!;
+                                      selectedState = value!;
                                     },
                                   );
                                 },

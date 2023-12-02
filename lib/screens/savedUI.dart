@@ -14,13 +14,23 @@ class SavedUI extends StatefulWidget {
 class _SavedUIState extends State<SavedUI> {
   bool isLoading = false;
   int pageNo = 0;
+  final scrollController = new ScrollController();
 
   @override
   void initState() {
     super.initState();
-    pageNo = 0;
+    scrollController.addListener(_scrollListener);
     bookmarkedVacancies = [];
     fetchBookmarkedVacancies();
+  }
+
+  _scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange) {
+      print("At bottom");
+      pageNo += 1;
+      fetchBookmarkedVacancies();
+    }
   }
 
   Future<void> pullRefresher() async {
@@ -67,13 +77,17 @@ class _SavedUIState extends State<SavedUI> {
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: pullRefresher,
-                  child: ListView.builder(
-                    itemCount: bookmarkedVacancies.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return JobCard(data: bookmarkedVacancies[index]);
-                    },
-                  ),
+                  child: bookmarkedVacancies.length == 0
+                      ? Center(child: Image.asset("assets/images/no-data.jpg"))
+                      : ListView.builder(
+                          controller: scrollController,
+                          itemCount: bookmarkedVacancies.length,
+                          shrinkWrap: true,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return JobCard(data: bookmarkedVacancies[index]);
+                          },
+                        ),
                 ),
               ),
             ],

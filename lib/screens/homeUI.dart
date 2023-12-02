@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/Job%20detail%20screen/jobCard.dart';
-import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -19,14 +18,23 @@ class _HomeUIState extends State<HomeUI> {
   int pageNo = 0;
   final searchKey = TextEditingController();
   final city = TextEditingController(text: userData['city']);
-  String state = '';
   String selectedDistanceRange = '0 - 10';
-  String _selectedState = statesList[0]['stateName'];
+  String selectedState = userData['state'];
+  final scrollController = new ScrollController();
 
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(_scrollListener);
     fetchJobVacancies();
+  }
+
+  _scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange) {
+      pageNo += 1;
+      fetchJobVacancies();
+    }
   }
 
   @override
@@ -52,11 +60,12 @@ class _HomeUIState extends State<HomeUI> {
           "pageNo": pageNo,
           "searchKey": searchKey.text,
           "city": city.text,
-          "state": state,
+          "state": selectedState,
           "distanceRange": selectedDistanceRange,
           "roleId": userData['roleId'],
         },
       );
+
       if (!dataResult['error']) {
         vacancyList.addAll(dataResult['response']);
       }
@@ -81,15 +90,19 @@ class _HomeUIState extends State<HomeUI> {
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: pullRefresher,
-                    child: ListView.builder(
-                      itemCount: vacancyList.length,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return JobCard(data: vacancyList[index]);
-                      },
-                    ),
+                    child: vacancyList.length == 0
+                        ? Center(
+                            child: Image.asset("assets/images/no-data.jpg"))
+                        : ListView.builder(
+                            controller: scrollController,
+                            itemCount: vacancyList.length,
+                            shrinkWrap: true,
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return JobCard(data: vacancyList[index]);
+                            },
+                          ),
                   ),
                 )
               ],
@@ -147,7 +160,7 @@ class _HomeUIState extends State<HomeUI> {
                     ),
                   ),
                   homePill(label: userData['roleTitle']),
-                  homePill(label: userData['city'] + ', ' + userData['state']),
+                  homePill(label: city.text + ', ' + selectedState),
                   homePill(label: selectedDistanceRange + ' km'),
                 ],
               ),
@@ -168,48 +181,48 @@ class _HomeUIState extends State<HomeUI> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        RichText(
-          text: TextSpan(
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: sdp(context, 12),
-              fontFamily: 'Poppins',
-            ),
-            children: [
-              TextSpan(
-                text: 'Hey, ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              TextSpan(
-                text: userData['firstName'],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              activeTabGlobal.value = 3;
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: Colors.purple.shade100,
-              shape: BoxShape.circle,
-            ),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(userData['image']),
-            ),
-          ),
-        ),
+        // RichText(
+        //   text: TextSpan(
+        //     style: TextStyle(
+        //       color: Colors.black,
+        //       fontWeight: FontWeight.w600,
+        //       fontSize: sdp(context, 12),
+        //       fontFamily: 'Poppins',
+        //     ),
+        //     children: [
+        //       TextSpan(
+        //         text: 'Hey, ',
+        //         style: TextStyle(
+        //           fontWeight: FontWeight.w400,
+        //         ),
+        //       ),
+        //       TextSpan(
+        //         text: userData['firstName'],
+        //         style: TextStyle(
+        //           color: Colors.black,
+        //           fontWeight: FontWeight.w600,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        // GestureDetector(
+        //   onTap: () {
+        //     setState(() {
+        //       activeTabGlobal.value = 3;
+        //     });
+        //   },
+        //   child: Container(
+        //     padding: EdgeInsets.all(5),
+        //     decoration: BoxDecoration(
+        //       color: Colors.purple.shade100,
+        //       shape: BoxShape.circle,
+        //     ),
+        //     child: CircleAvatar(
+        //       backgroundImage: NetworkImage(userData['image']),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -239,6 +252,7 @@ class _HomeUIState extends State<HomeUI> {
                 color: Colors.black,
                 fontWeight: FontWeight.w600,
               ),
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Search job profiles...',
@@ -247,6 +261,9 @@ class _HomeUIState extends State<HomeUI> {
                   fontSize: sdp(context, 10),
                 ),
               ),
+              onSubmitted: (value) {
+                fetchJobVacancies();
+              },
             ),
           ),
           GestureDetector(
@@ -301,13 +318,10 @@ class _HomeUIState extends State<HomeUI> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // setState(
-                          //   () {
-                          //     _selectedField = '';
-                          //     _selectedLocation = '';
-                          //     selectedDistanceRange = '';
-                          //   },
-                          // );
+                          Navigator.pop(context);
+                          pageNo = 0;
+                          vacancyList = [];
+                          fetchJobVacancies();
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: kPrimaryColor,
@@ -379,7 +393,7 @@ class _HomeUIState extends State<HomeUI> {
                                 border: Border.all(color: Colors.grey.shade400),
                               ),
                               child: DropdownButton(
-                                value: _selectedState,
+                                value: selectedState,
                                 underline: SizedBox.shrink(),
                                 isDense: true,
                                 menuMaxHeight:
@@ -407,7 +421,7 @@ class _HomeUIState extends State<HomeUI> {
                                 onChanged: (value) {
                                   setState(
                                     () {
-                                      _selectedState = value!;
+                                      selectedState = value!;
                                     },
                                   );
                                 },

@@ -98,15 +98,19 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
                       ? _noResumes(context)
                       : RefreshIndicator(
                           onRefresh: pullRefresher,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.symmetric(horizontal: 15),
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: resumeList.length,
-                            itemBuilder: (context, index) {
-                              return _resumeTile(resumeList[index]);
-                            },
-                          ),
+                          child: resumeList.length == 0
+                              ? Center(
+                                  child:
+                                      Image.asset("assets/images/no-data.jpg"))
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  physics: AlwaysScrollableScrollPhysics(),
+                                  itemCount: resumeList.length,
+                                  itemBuilder: (context, index) {
+                                    return _resumeTile(resumeList[index]);
+                                  },
+                                ),
                         ),
                 ),
                 height10,

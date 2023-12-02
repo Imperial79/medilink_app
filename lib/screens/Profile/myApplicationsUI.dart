@@ -16,13 +16,23 @@ class MyApplicationsUI extends StatefulWidget {
 class _MyApplicationsUIState extends State<MyApplicationsUI> {
   bool isLoading = false;
   int pageNo = 0;
+  final scrollController = new ScrollController();
 
   @override
   void initState() {
     super.initState();
-    pageNo = 0;
+    scrollController.addListener(_scrollListener);
     appliedVacancies = [];
     fetchAppliedVacancies();
+  }
+
+  _scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange) {
+      print("At bottom");
+      pageNo += 1;
+      fetchAppliedVacancies();
+    }
   }
 
   Future<void> pullRefresher() async {
@@ -60,14 +70,18 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
           children: [
             RefreshIndicator(
               onRefresh: pullRefresher,
-              child: ListView.builder(
-                itemCount: appliedVacancies.length,
-                shrinkWrap: true,
-                padding: EdgeInsets.all(15),
-                itemBuilder: (context, index) {
-                  return _appliedJobsCard(appliedVacancies[index]);
-                },
-              ),
+              child: appliedVacancies.length == 0
+                  ? Center(child: Image.asset("assets/images/no-data.jpg"))
+                  : ListView.builder(
+                      controller: scrollController,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemCount: appliedVacancies.length,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.all(15),
+                      itemBuilder: (context, index) {
+                        return _appliedJobsCard(appliedVacancies[index]);
+                      },
+                    ),
             ),
             isLoading ? fullScreenLoading(context) : SizedBox()
           ],
