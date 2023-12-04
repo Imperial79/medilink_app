@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medilink/dashboardUI.dart';
@@ -240,67 +241,79 @@ class _RegisterUIState extends State<RegisterUI> {
     }
   }
 
-  void _showMultiSelect({
+  Widget _showMultiSelect({
     required BuildContext context,
     required String arrayName,
     required String header,
-  }) async {
+  }) {
     List itemArray = jsonDecode(rolesList[_selectedRole][arrayName]);
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: kScaffoldColor,
-      isScrollControlled: true,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    OutlinedButton(
+                    Text(
+                      header,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    MaterialButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("Done"),
+                      textColor: kPrimaryColor,
+                      child: Text("Apply"),
                     ),
-                    MultiSelectChipField(
-                      items: List.generate(itemArray.length, (index) {
-                        return MultiSelectItem(
-                            itemArray[index], itemArray[index]);
-                      }),
-                      initialValue: [],
-                      title: Text(header),
-                      // headerColor: Colors.blue.withOpacity(0.5),
-                      scroll: false,
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Colors.blue.shade700, width: 1.8),
-                      ),
-                      selectedChipColor: Colors.blue.withOpacity(0.5),
-                      selectedTextStyle: TextStyle(color: Colors.blue[800]),
-                      onTap: (values) {
-                        if (arrayName == "posts") {
-                          selectedPosts = values;
-                        } else if (arrayName == "employmentType") {
-                          selectedEmploymentType = values;
-                        } else if (arrayName == "workSetting") {
-                          selectedWorkSetting = values;
-                        } else if (arrayName == "specialization") {
-                          selectedSpecialization = values;
-                        } else if (arrayName == "graduationType") {
-                          selectedGraduationType = values;
-                        }
-                      },
-                    )
                   ],
                 ),
-              ),
-            );
-          },
+                MultiSelectChipField(
+                  items: List.generate(itemArray.length, (index) {
+                    return MultiSelectItem(itemArray[index], itemArray[index]);
+                  }),
+                  initialValue: arrayName == "posts"
+                      ? selectedPosts
+                      : arrayName == "employmentType"
+                          ? selectedEmploymentType
+                          : arrayName == "workSetting"
+                              ? selectedWorkSetting
+                              : arrayName == "specialization"
+                                  ? selectedSpecialization
+                                  : selectedGraduationType,
+                  title: Text(header),
+                  showHeader: false,
+                  decoration: BoxDecoration(),
+                  headerColor: Colors.transparent,
+                  chipShape: RoundedRectangleBorder(borderRadius: kRadius(100)),
+                  scroll: false,
+                  selectedChipColor: kPrimaryColorAccentLighter,
+                  selectedTextStyle: TextStyle(color: kPrimaryColor),
+                  onTap: (values) {
+                    if (arrayName == "posts") {
+                      selectedPosts = values;
+                    } else if (arrayName == "employmentType") {
+                      selectedEmploymentType = values;
+                    } else if (arrayName == "workSetting") {
+                      selectedWorkSetting = values;
+                    } else if (arrayName == "specialization") {
+                      selectedSpecialization = values;
+                    } else if (arrayName == "graduationType") {
+                      selectedGraduationType = values;
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
         );
       },
-    ).then((value) => setState(() {}));
+    );
   }
 
   @override
@@ -343,6 +356,7 @@ class _RegisterUIState extends State<RegisterUI> {
                         child: Form(
                           key: _formKey,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -623,44 +637,45 @@ class _RegisterUIState extends State<RegisterUI> {
                                         ),
                                         kHeight(7),
                                         selectedPosts.length == 0
-                                            ? OutlinedButton(
-                                                onPressed: () {
-                                                  _showMultiSelect(
-                                                    context: context,
-                                                    arrayName: 'posts',
-                                                    header: "Select Posts",
-                                                  );
-                                                },
-                                                child: Text('Select Posts'),
-                                              )
-                                            : GestureDetector(
+                                            ? _multiSelectButton(
                                                 onTap: () {
-                                                  _showMultiSelect(
+                                                  showModalBottomSheet(
                                                     context: context,
-                                                    arrayName: 'posts',
-                                                    header: "Select Posts",
-                                                  );
-                                                },
-                                                child: Wrap(
-                                                  runSpacing: 5,
-                                                  spacing: 5,
-                                                  children: List.generate(
-                                                    selectedPosts.length,
-                                                    (index) {
-                                                      return Container(
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                kPrimaryColorAccentLighter),
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        child: Text(
-                                                            selectedPosts[
-                                                                index]),
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName: 'posts',
+                                                        header: "Select Posts",
                                                       );
                                                     },
-                                                  ),
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                label: 'Select Post')
+                                            : _multiSelectedContent(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName: 'posts',
+                                                        header: "Select Posts",
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                children: List.generate(
+                                                  selectedPosts.length,
+                                                  (index) {
+                                                    return _multiSelectPill(
+                                                        selectedPosts[index]);
+                                                  },
                                                 ),
-                                              )
+                                              ),
                                       ],
                                     ),
                               rolesList[_selectedRole]['employmentType'] ==
@@ -678,47 +693,49 @@ class _RegisterUIState extends State<RegisterUI> {
                                         ),
                                         kHeight(7),
                                         selectedEmploymentType.length == 0
-                                            ? OutlinedButton(
-                                                onPressed: () {
-                                                  _showMultiSelect(
-                                                    context: context,
-                                                    arrayName: 'employmentType',
-                                                    header:
-                                                        "Select Employment Type",
-                                                  );
-                                                },
-                                                child: Text(
-                                                    'Select Employment Type'),
-                                              )
-                                            : GestureDetector(
+                                            ? _multiSelectButton(
                                                 onTap: () {
-                                                  _showMultiSelect(
+                                                  showModalBottomSheet(
                                                     context: context,
-                                                    arrayName: 'employmentType',
-                                                    header:
-                                                        "Select Employment Type",
-                                                  );
-                                                },
-                                                child: Wrap(
-                                                  runSpacing: 5,
-                                                  spacing: 5,
-                                                  children: List.generate(
-                                                    selectedEmploymentType
-                                                        .length,
-                                                    (index) {
-                                                      return Container(
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                kPrimaryColorAccentLighter),
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        child: Text(
-                                                          selectedEmploymentType[
-                                                              index],
-                                                        ),
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'employmentType',
+                                                        header:
+                                                            "Select Employment Type",
                                                       );
                                                     },
-                                                  ),
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                label: 'Select Employment Type',
+                                              )
+                                            : _multiSelectedContent(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'employmentType',
+                                                        header:
+                                                            "Select Employment Type",
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                children: List.generate(
+                                                  selectedEmploymentType.length,
+                                                  (index) {
+                                                    return _multiSelectPill(
+                                                        selectedEmploymentType[
+                                                            index]);
+                                                  },
                                                 ),
                                               )
                                       ],
@@ -738,47 +755,48 @@ class _RegisterUIState extends State<RegisterUI> {
                                         ),
                                         kHeight(7),
                                         selectedSpecialization.length == 0
-                                            ? OutlinedButton(
-                                                onPressed: () {
-                                                  _showMultiSelect(
-                                                    context: context,
-                                                    arrayName: 'specialization',
-                                                    header:
-                                                        "Select Specialization",
-                                                  );
-                                                },
-                                                child: Text(
-                                                    'Select Specialization'),
-                                              )
-                                            : GestureDetector(
+                                            ? _multiSelectButton(
                                                 onTap: () {
-                                                  _showMultiSelect(
+                                                  showModalBottomSheet(
                                                     context: context,
-                                                    arrayName: 'specialization',
-                                                    header:
-                                                        "Select Specialization",
-                                                  );
-                                                },
-                                                child: Wrap(
-                                                  runSpacing: 5,
-                                                  spacing: 5,
-                                                  children: List.generate(
-                                                    selectedEmploymentType
-                                                        .length,
-                                                    (index) {
-                                                      return Container(
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                kPrimaryColorAccentLighter),
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        child: Text(
-                                                          selectedEmploymentType[
-                                                              index],
-                                                        ),
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'specialization',
+                                                        header:
+                                                            "Select Specialization",
                                                       );
                                                     },
-                                                  ),
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                label: 'Select Specialization')
+                                            : _multiSelectedContent(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'specialization',
+                                                        header:
+                                                            "Select Specialization",
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                children: List.generate(
+                                                  selectedEmploymentType.length,
+                                                  (index) {
+                                                    return _multiSelectPill(
+                                                        selectedEmploymentType[
+                                                            index]);
+                                                  },
                                                 ),
                                               )
                                       ],
@@ -797,48 +815,49 @@ class _RegisterUIState extends State<RegisterUI> {
                                         ),
                                         kHeight(7),
                                         selectedWorkSetting.length == 0
-                                            ? OutlinedButton(
-                                                onPressed: () {
-                                                  _showMultiSelect(
-                                                    context: context,
-                                                    arrayName: 'workSetting',
-                                                    header:
-                                                        "Select Work Setting",
-                                                  );
-                                                },
-                                                child:
-                                                    Text('Select Work Setting'),
-                                              )
-                                            : GestureDetector(
+                                            ? _multiSelectButton(
                                                 onTap: () {
-                                                  _showMultiSelect(
+                                                  showModalBottomSheet(
                                                     context: context,
-                                                    arrayName: 'workSetting',
-                                                    header:
-                                                        "Select Work Setting",
-                                                  );
-                                                },
-                                                child: Wrap(
-                                                  runSpacing: 5,
-                                                  spacing: 5,
-                                                  children: List.generate(
-                                                    selectedWorkSetting.length,
-                                                    (index) {
-                                                      return Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              kPrimaryColorAccentLighter,
-                                                        ),
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        child: Text(
-                                                          selectedWorkSetting[
-                                                              index],
-                                                        ),
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'workSetting',
+                                                        header:
+                                                            "Select Work Setting",
                                                       );
                                                     },
-                                                  ),
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                label: 'Select Work Setting',
+                                              )
+                                            : _multiSelectedContent(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'workSetting',
+                                                        header:
+                                                            "Select Work Setting",
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                children: List.generate(
+                                                  selectedWorkSetting.length,
+                                                  (index) {
+                                                    return _multiSelectPill(
+                                                        selectedWorkSetting[
+                                                            index]);
+                                                  },
                                                 ),
                                               )
                                       ],
@@ -858,49 +877,52 @@ class _RegisterUIState extends State<RegisterUI> {
                                         ),
                                         kHeight(7),
                                         selectedGraduationType.length == 0
-                                            ? OutlinedButton(
-                                                onPressed: () {
-                                                  _showMultiSelect(
-                                                    context: context,
-                                                    arrayName: 'graduationType',
-                                                    header: "Select Graduation",
-                                                  );
-                                                },
-                                                child:
-                                                    Text('Select Graduation'),
-                                              )
-                                            : GestureDetector(
+                                            ? _multiSelectButton(
                                                 onTap: () {
-                                                  _showMultiSelect(
+                                                  showModalBottomSheet(
                                                     context: context,
-                                                    arrayName: 'graduationType',
-                                                    header: "Select Graduation",
-                                                  );
-                                                },
-                                                child: Wrap(
-                                                  runSpacing: 5,
-                                                  spacing: 5,
-                                                  children: List.generate(
-                                                    selectedGraduationType
-                                                        .length,
-                                                    (index) {
-                                                      return Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              kPrimaryColorAccentLighter,
-                                                        ),
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        child: Text(
-                                                          selectedGraduationType[
-                                                              index],
-                                                        ),
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'graduationType',
+                                                        header:
+                                                            "Select Graduation",
                                                       );
                                                     },
-                                                  ),
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                label: 'Select Graduation',
+                                              )
+                                            : _multiSelectedContent(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (context) {
+                                                      return _showMultiSelect(
+                                                        context: context,
+                                                        arrayName:
+                                                            'graduationType',
+                                                        header:
+                                                            "Select Graduation",
+                                                      );
+                                                    },
+                                                  ).then((value) =>
+                                                      setState(() {}));
+                                                },
+                                                children: List.generate(
+                                                  selectedGraduationType.length,
+                                                  (index) {
+                                                    return _multiSelectPill(
+                                                        selectedGraduationType[
+                                                            index]);
+                                                  },
                                                 ),
                                               ),
+                                        height10,
                                       ],
                                     ),
                               rolesList[_selectedRole]['title'] != "Student"
@@ -1118,6 +1140,59 @@ class _RegisterUIState extends State<RegisterUI> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _multiSelectButton({void Function()? onTap, required String label}) {
+    return kTextButton(
+      onTap: onTap,
+      child: Text(
+        label,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: kPrimaryColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _multiSelectedContent({
+    void Function()? onTap,
+    List<Widget> children = const <Widget>[],
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: kRadius(10),
+          color: Colors.grey.shade100,
+        ),
+        child: Wrap(
+          runSpacing: 5,
+          spacing: 5,
+          children: children,
+        ),
+      ),
+    );
+  }
+
+  Widget _multiSelectPill(String label) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+      decoration: BoxDecoration(
+        borderRadius: kRadius(100),
+        color: Colors.grey.shade700,
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: sdp(context, 10),
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
         ),
       ),
     );
