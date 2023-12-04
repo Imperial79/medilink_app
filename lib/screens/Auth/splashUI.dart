@@ -22,7 +22,28 @@ class _SplashUIState extends State<SplashUI> {
 
   Future<void> _functionCaller() async {
     await fetchStates();
+    await fetchRoles();
     _auth();
+  }
+
+  Future<void> fetchStates() async {
+    var dataResult = await apiCallBack(
+      method: "GET",
+      path: "/states/fetch-states.php",
+    );
+    if (!dataResult['error']) {
+      statesList = dataResult['response'];
+    }
+  }
+
+  Future<void> fetchRoles() async {
+    var dataResult = await apiCallBack(
+      method: "GET",
+      path: "/role/fetch-roles.php",
+    );
+    if (!dataResult['error']) {
+      rolesList = dataResult['response'];
+    }
   }
 
   Future<void> _auth() async {
@@ -36,16 +57,6 @@ class _SplashUIState extends State<SplashUI> {
       navPushReplacement(context, const DashboardUI());
     } else {
       navPushReplacement(context, const WelcomeUI());
-    }
-  }
-
-  Future<void> fetchStates() async {
-    var dataResult = await apiCallBack(
-      method: "GET",
-      path: "/states/fetch-states.php",
-    );
-    if (!dataResult['error']) {
-      statesList = dataResult['response'];
     }
   }
 

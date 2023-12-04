@@ -31,7 +31,6 @@ class _RecruitersUIState extends State<RecruitersUI> {
   _scrollListener() {
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
-      print("At bottom");
       pageNo += 1;
       fetchRecruiters();
     }
@@ -62,7 +61,6 @@ class _RecruitersUIState extends State<RecruitersUI> {
           "state": selectedState,
         },
       );
-      print(dataResult);
       if (!dataResult['error']) {
         recruitersList.addAll(dataResult['response']);
       }
@@ -165,7 +163,10 @@ class _RecruitersUIState extends State<RecruitersUI> {
                       fontSize: sdp(context, 10),
                     ),
                   ),
-                  homePill(label: userData['city'] + ', ' + userData['state']),
+                  homePill(
+                      label: (city.text.isEmpty ? 'Anywhere' : city.text) +
+                          ', ' +
+                          selectedState),
                 ],
               ),
               height10,
@@ -213,6 +214,9 @@ class _RecruitersUIState extends State<RecruitersUI> {
                   fontSize: sdp(context, 10),
                 ),
               ),
+              onSubmitted: (value) {
+                fetchRecruiters();
+              },
             ),
           ),
           GestureDetector(

@@ -160,7 +160,10 @@ class _HomeUIState extends State<HomeUI> {
                     ),
                   ),
                   homePill(label: userData['roleTitle']),
-                  homePill(label: city.text + ', ' + selectedState),
+                  homePill(
+                      label: (city.text.isEmpty ? 'Anywhere' : city.text) +
+                          ', ' +
+                          selectedState),
                   homePill(label: selectedDistanceRange + ' km'),
                 ],
               ),

@@ -36,7 +36,7 @@ class _RegisterUIState extends State<RegisterUI> {
   final lastName = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
-  final graduationYear = TextEditingController();
+  final graduationDate = TextEditingController();
   final city = TextEditingController();
   final address = TextEditingController();
   final dob = TextEditingController();
@@ -63,7 +63,6 @@ class _RegisterUIState extends State<RegisterUI> {
     } else {
       email.text = widget.email;
     }
-    fetchRoles();
   }
 
   @override
@@ -73,22 +72,10 @@ class _RegisterUIState extends State<RegisterUI> {
     lastName.dispose();
     phone.dispose();
     email.dispose();
-    graduationYear.dispose();
+    graduationDate.dispose();
     city.dispose();
     address.dispose();
-  }
-
-  Future<void> fetchRoles() async {
-    var dataResult = await apiCallBack(
-      method: "GET",
-      path: "/role/fetch-roles.php",
-    );
-    if (!dataResult['error']) {
-      setState(() {
-        rolesList = dataResult['response'];
-        _selectedRole = 0;
-      });
-    }
+    dob.dispose();
   }
 
   Future<void> registerUsingPhone() async {
@@ -116,7 +103,7 @@ class _RegisterUIState extends State<RegisterUI> {
             "employmentType": json.encode(selectedEmploymentType),
             "workSetting": json.encode(selectedWorkSetting),
             "graduationType": json.encode(selectedGraduationType),
-            "graduationDate": graduationYear.text,
+            "graduationDate": graduationDate.text,
             "fcmToken": fcmToken.toString(),
           };
         });
@@ -139,7 +126,7 @@ class _RegisterUIState extends State<RegisterUI> {
           "employmentType": json.encode(selectedEmploymentType),
           "workSetting": json.encode(selectedWorkSetting),
           "graduationType": json.encode(selectedGraduationType),
-          "graduationDate": graduationYear.text,
+          "graduationDate": graduationDate.text,
           "fcmToken": "",
         };
       }
@@ -191,7 +178,7 @@ class _RegisterUIState extends State<RegisterUI> {
             "employmentType": json.encode(selectedEmploymentType),
             "workSetting": json.encode(selectedWorkSetting),
             "graduationType": json.encode(selectedGraduationType),
-            "graduationDate": graduationYear.text,
+            "graduationDate": graduationDate.text,
             "fcmToken": fcmToken.toString(),
           };
         });
@@ -214,7 +201,7 @@ class _RegisterUIState extends State<RegisterUI> {
           "employmentType": json.encode(selectedEmploymentType),
           "workSetting": json.encode(selectedWorkSetting),
           "graduationType": json.encode(selectedGraduationType),
-          "graduationDate": graduationYear.text,
+          "graduationDate": graduationDate.text,
           "fcmToken": "",
         };
       }
@@ -929,7 +916,7 @@ class _RegisterUIState extends State<RegisterUI> {
                                   ? SizedBox.shrink()
                                   : kTextField(
                                       context,
-                                      controller: graduationYear,
+                                      controller: graduationDate,
                                       bgColor: Colors.white,
                                       hintText: '2000-2005',
                                       label: "Graduation Year",
