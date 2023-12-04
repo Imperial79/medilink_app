@@ -1079,10 +1079,34 @@ class _RegisterUIState extends State<RegisterUI> {
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                if (widget.type == "Phone") {
-                  registerUsingPhone();
+                if (rolesList[_selectedRole]['posts'] != "NULL" &&
+                    selectedPosts.length == 0) {
+                  kSnackBar(context, content: "Select Post", isDanger: true);
+                } else if (rolesList[_selectedRole]['employmentType'] !=
+                        "NULL" &&
+                    selectedEmploymentType.length == 0) {
+                  kSnackBar(context,
+                      content: "Select Employment Type", isDanger: true);
+                } else if (rolesList[_selectedRole]['workSetting'] != "NULL" &&
+                    selectedWorkSetting.length == 0) {
+                  kSnackBar(context,
+                      content: "Select Work Setting", isDanger: true);
+                } else if (rolesList[_selectedRole]['specialization'] !=
+                        "NULL" &&
+                    selectedSpecialization.length == 0) {
+                  kSnackBar(context,
+                      content: "Select Specialization", isDanger: true);
+                } else if (rolesList[_selectedRole]['graduationType'] !=
+                        "NULL" &&
+                    selectedGraduationType.length == 0) {
+                  kSnackBar(context,
+                      content: "Select Graduation", isDanger: true);
                 } else {
-                  registerUsingEmail();
+                  if (widget.type == "Phone") {
+                    registerUsingPhone();
+                  } else {
+                    registerUsingEmail();
+                  }
                 }
               }
             },
