@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_select_flutter/chip_field/multi_select_chip_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 class EditProfileUI extends StatefulWidget {
   const EditProfileUI({super.key});
@@ -23,29 +27,36 @@ class _EditProfileUIState extends State<EditProfileUI> {
   final lastName = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
-  final specialization = TextEditingController();
+  final subRole = TextEditingController();
   final city = TextEditingController();
   final address = TextEditingController();
   final dob = TextEditingController();
   final role = TextEditingController();
-
+  final graduationDate = TextEditingController();
   String _selectedGender = userData['gender'];
   String _selectedState = userData['state'];
+  int _selectedRole = 0;
+  List selectedPosts = [];
+  List selectedEmploymentType = [];
+  List selectedWorkSetting = [];
+  List selectedSpecialization = [];
+  List selectedGraduationType = [];
 
   @override
   void initState() {
     super.initState();
-
+    _selectedRole = int.parse(userData['roleId']);
     firstName.text = userData['firstName'];
     lastName.text = userData['lastName'];
     phone.text = userData['phone'];
     email.text = userData['email'];
-    specialization.text = userData['specialization'];
+    subRole.text = userData['subRole'];
     city.text = userData['city'];
     address.text = userData['address'];
     role.text = userData['roleTitle'];
     dob.text = userData['dob'];
-    // fetchRoles();
+    graduationDate.text = userData['graduationDate'];
+    fetchRoles();
   }
 
   @override
@@ -55,10 +66,22 @@ class _EditProfileUIState extends State<EditProfileUI> {
     lastName.dispose();
     phone.dispose();
     email.dispose();
-    specialization.dispose();
+    subRole.dispose();
     city.dispose();
     address.dispose();
     role.dispose();
+  }
+
+  Future<void> fetchRoles() async {
+    var dataResult = await apiCallBack(
+      method: "GET",
+      path: "/role/fetch-roles.php",
+    );
+    if (!dataResult['error']) {
+      setState(() {
+        rolesList = dataResult['response'];
+      });
+    }
   }
 
   _pickImage() async {
@@ -102,7 +125,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
           "lastName": lastName.text,
           "dob": dob.text,
           "gender": _selectedGender,
-          "specialization": specialization.text,
+          "specialization": subRole.text,
           "address": address.text,
           "city": city.text,
           "state": _selectedState,
@@ -114,7 +137,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
         userData["lastName"] = lastName.text;
         userData["dob"] = dob.text;
         userData["gender"] = _selectedGender;
-        userData["specialization"] = specialization.text;
+        userData["specialization"] = subRole.text;
         userData["address"] = address.text;
         userData["city"] = city.text;
         userData["state"] = _selectedState;
@@ -126,6 +149,69 @@ class _EditProfileUIState extends State<EditProfileUI> {
     } catch (e) {
       setState(() => isLoading = false);
     }
+  }
+
+  void _showMultiSelect({
+    required BuildContext context,
+    required String arrayName,
+    required String header,
+  }) async {
+    List itemArray = jsonDecode(rolesList[_selectedRole][arrayName]);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: kScaffoldColor,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Done"),
+                    ),
+                    MultiSelectChipField(
+                      items: List.generate(itemArray.length, (index) {
+                        return MultiSelectItem(
+                            itemArray[index], itemArray[index]);
+                      }),
+                      initialValue: [],
+                      title: Text(header),
+                      // headerColor: Colors.blue.withOpacity(0.5),
+                      scroll: false,
+                      decoration: BoxDecoration(
+                        border:
+                            Border.all(color: Colors.blue.shade700, width: 1.8),
+                      ),
+                      selectedChipColor: Colors.blue.withOpacity(0.5),
+                      selectedTextStyle: TextStyle(color: Colors.blue[800]),
+                      onTap: (values) {
+                        if (arrayName == "posts") {
+                          selectedPosts = values;
+                        } else if (arrayName == "employmentType") {
+                          selectedEmploymentType = values;
+                        } else if (arrayName == "workSetting") {
+                          selectedWorkSetting = values;
+                        } else if (arrayName == "specialization") {
+                          selectedSpecialization = values;
+                        } else if (arrayName == "graduationType") {
+                          selectedGraduationType = values;
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).then((value) => setState(() {}));
   }
 
   @override
@@ -145,6 +231,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -327,7 +414,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
                         label: "Roles",
                         readOnly: true,
                         keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.characters,
+                        textCapitalization: TextCapitalization.words,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'This field is required!';
@@ -338,12 +425,12 @@ class _EditProfileUIState extends State<EditProfileUI> {
                       height10,
                       kTextField(
                         context,
-                        controller: specialization,
+                        controller: subRole,
                         bgColor: Colors.white,
-                        hintText: 'MBBS, MD ...',
-                        label: "Specialization",
+                        hintText: 'Sub Role',
+                        label: "Sub Role",
                         keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.characters,
+                        textCapitalization: TextCapitalization.words,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'This field is required!';
@@ -351,6 +438,297 @@ class _EditProfileUIState extends State<EditProfileUI> {
                           return null;
                         },
                       ),
+                      height10,
+                      rolesList[_selectedRole]['subRoles'] == "NULL"
+                          ? SizedBox.shrink()
+                          : kTextField(
+                              context,
+                              controller: subRole,
+                              bgColor: Colors.white,
+                              hintText: 'Sub Role',
+                              label: "Sub Role",
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.words,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'This field is required!';
+                                }
+                                return null;
+                              },
+                            ),
+                      rolesList[_selectedRole]['posts'] == "NULL"
+                          ? SizedBox.shrink()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                height10,
+                                Text(
+                                  'Post',
+                                  style: TextStyle(fontSize: sdp(context, 9)),
+                                ),
+                                kHeight(7),
+                                selectedPosts.length == 0
+                                    ? OutlinedButton(
+                                        onPressed: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'posts',
+                                            header: "Select Posts",
+                                          );
+                                        },
+                                        child: Text('Select Posts'),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'posts',
+                                            header: "Select Posts",
+                                          );
+                                        },
+                                        child: Wrap(
+                                          runSpacing: 5,
+                                          spacing: 5,
+                                          children: List.generate(
+                                            selectedPosts.length,
+                                            (index) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        kPrimaryColorAccentLighter),
+                                                padding: EdgeInsets.all(8),
+                                                child:
+                                                    Text(selectedPosts[index]),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+                      rolesList[_selectedRole]['employmentType'] == "NULL"
+                          ? SizedBox.shrink()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                height10,
+                                Text(
+                                  'Employment Type',
+                                  style: TextStyle(fontSize: sdp(context, 9)),
+                                ),
+                                kHeight(7),
+                                selectedEmploymentType.length == 0
+                                    ? OutlinedButton(
+                                        onPressed: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'employmentType',
+                                            header: "Select Employment Type",
+                                          );
+                                        },
+                                        child: Text('Select Employment Type'),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'employmentType',
+                                            header: "Select Employment Type",
+                                          );
+                                        },
+                                        child: Wrap(
+                                          runSpacing: 5,
+                                          spacing: 5,
+                                          children: List.generate(
+                                            selectedEmploymentType.length,
+                                            (index) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        kPrimaryColorAccentLighter),
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  selectedEmploymentType[index],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+                      rolesList[_selectedRole]['specialization'] == "NULL"
+                          ? SizedBox.shrink()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                height10,
+                                Text(
+                                  'Specialization',
+                                  style: TextStyle(fontSize: sdp(context, 9)),
+                                ),
+                                kHeight(7),
+                                selectedSpecialization.length == 0
+                                    ? OutlinedButton(
+                                        onPressed: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'specialization',
+                                            header: "Select Specialization",
+                                          );
+                                        },
+                                        child: Text('Select Specialization'),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'specialization',
+                                            header: "Select Specialization",
+                                          );
+                                        },
+                                        child: Wrap(
+                                          runSpacing: 5,
+                                          spacing: 5,
+                                          children: List.generate(
+                                            selectedEmploymentType.length,
+                                            (index) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        kPrimaryColorAccentLighter),
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  selectedEmploymentType[index],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+                      rolesList[_selectedRole]['workSetting'] == "NULL"
+                          ? SizedBox.shrink()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                height10,
+                                Text(
+                                  'Work Setting',
+                                  style: TextStyle(fontSize: sdp(context, 9)),
+                                ),
+                                kHeight(7),
+                                selectedWorkSetting.length == 0
+                                    ? OutlinedButton(
+                                        onPressed: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'workSetting',
+                                            header: "Select Work Setting",
+                                          );
+                                        },
+                                        child: Text('Select Work Setting'),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'workSetting',
+                                            header: "Select Work Setting",
+                                          );
+                                        },
+                                        child: Wrap(
+                                          runSpacing: 5,
+                                          spacing: 5,
+                                          children: List.generate(
+                                            selectedWorkSetting.length,
+                                            (index) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      kPrimaryColorAccentLighter,
+                                                ),
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  selectedWorkSetting[index],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+                      rolesList[_selectedRole]['graduationType'] == "NULL"
+                          ? SizedBox.shrink()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                height10,
+                                Text(
+                                  'Graduation',
+                                  style: TextStyle(fontSize: sdp(context, 9)),
+                                ),
+                                kHeight(7),
+                                selectedGraduationType.length == 0
+                                    ? OutlinedButton(
+                                        onPressed: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'graduationType',
+                                            header: "Select Graduation",
+                                          );
+                                        },
+                                        child: Text('Select Graduation'),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          _showMultiSelect(
+                                            context: context,
+                                            arrayName: 'graduationType',
+                                            header: "Select Graduation",
+                                          );
+                                        },
+                                        child: Wrap(
+                                          runSpacing: 5,
+                                          spacing: 5,
+                                          children: List.generate(
+                                            selectedGraduationType.length,
+                                            (index) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      kPrimaryColorAccentLighter,
+                                                ),
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  selectedGraduationType[index],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                              ],
+                            ),
+                      rolesList[_selectedRole]['title'] != "Student"
+                          ? SizedBox.shrink()
+                          : kTextField(
+                              context,
+                              controller: graduationDate,
+                              bgColor: Colors.white,
+                              hintText: '2000-2005',
+                              label: "Graduation Year",
+                              keyboardType: TextInputType.number,
+                              textCapitalization: TextCapitalization.characters,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'This field is required!';
+                                }
+                                return null;
+                              },
+                            ),
                       height10,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
