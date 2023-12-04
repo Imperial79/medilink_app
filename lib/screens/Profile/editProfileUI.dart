@@ -34,6 +34,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
   final graduationDate = TextEditingController();
   String _selectedGender = userData['gender'];
   String _selectedState = userData['state'];
+  String selectedExperience = userData['experience'];
   int _selectedRole = 0;
   List selectedPosts = json.decode(userData['post']);
   List selectedEmploymentType = json.decode(userData['employmentType']);
@@ -114,6 +115,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
           "firstName": firstName.text,
           "lastName": lastName.text,
           "dob": dob.text,
+          "experience": selectedExperience,
           "gender": _selectedGender,
           "subRole": subRole.text,
           "specialization": json.encode(selectedSpecialization),
@@ -726,6 +728,57 @@ class _EditProfileUIState extends State<EditProfileUI> {
                                 return null;
                               },
                             ),
+                      height10,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          height10,
+                          Text(
+                            'Experience',
+                            style: TextStyle(fontSize: sdp(context, 9)),
+                          ),
+                          kHeight(7),
+                          Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              borderRadius: kRadius(10),
+                              border: Border.all(color: Colors.grey.shade400),
+                            ),
+                            child: DropdownButton(
+                              value: selectedExperience,
+                              underline: SizedBox.shrink(),
+                              isDense: true,
+                              isExpanded: true,
+                              dropdownColor: Colors.white,
+                              borderRadius: kRadius(10),
+                              menuMaxHeight:
+                                  MediaQuery.of(context).size.height * .5,
+                              alignment: AlignmentDirectional.bottomCenter,
+                              elevation: 24,
+                              padding: EdgeInsets.all(8),
+                              icon: Icon(Icons.keyboard_arrow_down_rounded),
+                              iconSize: 20,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Poppins',
+                              ),
+                              items: List.generate(experience.length, (index) {
+                                return DropdownMenuItem(
+                                  value: experience[index].toString(),
+                                  child: Text(experience[index]),
+                                );
+                              }),
+                              onChanged: (value) {
+                                setState(
+                                  () {
+                                    selectedExperience = value!;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                       height10,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

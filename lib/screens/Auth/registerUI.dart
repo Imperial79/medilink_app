@@ -40,6 +40,7 @@ class _RegisterUIState extends State<RegisterUI> {
   final dob = TextEditingController();
   String _selectedGender = 'M';
   int _selectedRole = 0;
+  String selectedExperience = 'Fresher';
   String _selectedState = statesList[0]['stateName'];
   List subRolesArr = ['Select'];
   int selectedSubRole = 0;
@@ -52,9 +53,6 @@ class _RegisterUIState extends State<RegisterUI> {
   @override
   void initState() {
     super.initState();
-    rolesList = [
-      {"id": "0", "title": "Choose Role"}
-    ];
 
     if (widget.type == "Phone") {
       phone.text = widget.phone;
@@ -91,6 +89,7 @@ class _RegisterUIState extends State<RegisterUI> {
             "phone": widget.phone,
             "email": email.text,
             "otp": widget.otp,
+            "experience": selectedExperience,
             "specialization": json.encode(selectedSpecialization),
             "address": address.text,
             "city": city.text,
@@ -114,6 +113,7 @@ class _RegisterUIState extends State<RegisterUI> {
           "phone": widget.phone,
           "email": email.text,
           "otp": widget.otp,
+          "experience": selectedExperience,
           "specialization": json.encode(selectedSpecialization),
           "address": address.text,
           "city": city.text,
@@ -166,6 +166,7 @@ class _RegisterUIState extends State<RegisterUI> {
             "phone": phone.text,
             "email": widget.email,
             "guid": widget.guid,
+            "experience": selectedExperience,
             "specialization": json.encode(selectedSpecialization),
             "address": address.text,
             "city": city.text,
@@ -189,6 +190,7 @@ class _RegisterUIState extends State<RegisterUI> {
           "phone": phone.text,
           "email": widget.email,
           "guid": widget.guid,
+          "experience": selectedExperience,
           "specialization": json.encode(selectedSpecialization),
           "address": address.text,
           "city": city.text,
@@ -928,6 +930,62 @@ class _RegisterUIState extends State<RegisterUI> {
                                         return null;
                                       },
                                     ),
+                              height10,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  height10,
+                                  Text(
+                                    'Experience',
+                                    style: TextStyle(fontSize: sdp(context, 9)),
+                                  ),
+                                  kHeight(7),
+                                  Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: kRadius(10),
+                                      border: Border.all(
+                                          color: Colors.grey.shade400),
+                                    ),
+                                    child: DropdownButton(
+                                      value: selectedExperience,
+                                      underline: SizedBox.shrink(),
+                                      isDense: true,
+                                      isExpanded: true,
+                                      dropdownColor: Colors.white,
+                                      borderRadius: kRadius(10),
+                                      menuMaxHeight:
+                                          MediaQuery.of(context).size.height *
+                                              .5,
+                                      alignment:
+                                          AlignmentDirectional.bottomCenter,
+                                      elevation: 24,
+                                      padding: EdgeInsets.all(8),
+                                      icon: Icon(
+                                          Icons.keyboard_arrow_down_rounded),
+                                      iconSize: 20,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                      items: List.generate(experience.length,
+                                          (index) {
+                                        return DropdownMenuItem(
+                                          value: experience[index].toString(),
+                                          child: Text(experience[index]),
+                                        );
+                                      }),
+                                      onChanged: (value) {
+                                        setState(
+                                          () {
+                                            selectedExperience = value!;
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                               height10,
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
