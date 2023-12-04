@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 // ------------->
-const String appVersion = '1.0.8';
+const String appVersion = '1.0.9';
 // ------------->
 
 Map userData = {};
