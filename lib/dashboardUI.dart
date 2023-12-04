@@ -125,7 +125,7 @@ class _DashboardUIState extends State<DashboardUI> {
                 kNavigationButton(
                   index: 3,
                   icon: 'profile',
-                  label: userData['firstName'] + 'djdjdjdjdjdjdj',
+                  label: userData['firstName'],
                 ),
               ],
             ),

@@ -35,7 +35,7 @@ class _RegisterUIState extends State<RegisterUI> {
   final lastName = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
-  final specialization = TextEditingController();
+  final graduationYear = TextEditingController();
   final city = TextEditingController();
   final address = TextEditingController();
   final dob = TextEditingController();
@@ -48,6 +48,7 @@ class _RegisterUIState extends State<RegisterUI> {
   List selectedEmploymentType = [];
   List selectedWorkSetting = [];
   List selectedSpecialization = [];
+  List selectedGraduationType = [];
 
   @override
   void initState() {
@@ -71,7 +72,7 @@ class _RegisterUIState extends State<RegisterUI> {
     lastName.dispose();
     phone.dispose();
     email.dispose();
-    specialization.dispose();
+    graduationYear.dispose();
     city.dispose();
     address.dispose();
   }
@@ -90,11 +91,35 @@ class _RegisterUIState extends State<RegisterUI> {
   }
 
   Future<void> registerUsingPhone() async {
-    setState(() => isLoading = true);
-    Map<String, dynamic> body = {};
     try {
-      await OneSignal.shared.getDeviceState().then((value) async {
-        var fcmToken = value!.userId!;
+      setState(() => isLoading = true);
+      Map<String, dynamic> body = {};
+      try {
+        await OneSignal.shared.getDeviceState().then((value) async {
+          var fcmToken = value!.userId!;
+          body = {
+            "firstName": firstName.text,
+            "lastName": lastName.text,
+            "dob": dob.text,
+            "gender": _selectedGender,
+            "phone": widget.phone,
+            "email": email.text,
+            "otp": widget.otp,
+            "specialization": json.encode(selectedSpecialization),
+            "address": address.text,
+            "city": city.text,
+            "state": _selectedState,
+            "roleId": _selectedRole,
+            "subRole": subRolesArr[selectedSubRole],
+            "post": json.encode(selectedPosts),
+            "employmentType": json.encode(selectedEmploymentType),
+            "workSetting": json.encode(selectedWorkSetting),
+            "graduationType": json.encode(selectedGraduationType),
+            "graduationDate": graduationYear.text,
+            "fcmToken": fcmToken.toString(),
+          };
+        });
+      } catch (e) {
         body = {
           "firstName": firstName.text,
           "lastName": lastName.text,
@@ -103,55 +128,73 @@ class _RegisterUIState extends State<RegisterUI> {
           "phone": widget.phone,
           "email": email.text,
           "otp": widget.otp,
-          "specialization": specialization.text,
+          "specialization": json.encode(selectedSpecialization),
           "address": address.text,
           "city": city.text,
           "state": _selectedState,
           "roleId": _selectedRole,
-          "fcmToken": fcmToken.toString(),
+          "subRole": subRolesArr[selectedSubRole],
+          "post": json.encode(selectedPosts),
+          "employmentType": json.encode(selectedEmploymentType),
+          "workSetting": json.encode(selectedWorkSetting),
+          "graduationType": json.encode(selectedGraduationType),
+          "graduationDate": graduationYear.text,
+          "fcmToken": "",
         };
-      });
-    } catch (e) {
-      body = {
-        "firstName": firstName.text,
-        "lastName": lastName.text,
-        "dob": dob.text,
-        "gender": _selectedGender,
-        "phone": widget.phone,
-        "email": email.text,
-        "otp": widget.otp,
-        "specialization": specialization.text,
-        "address": address.text,
-        "city": city.text,
-        "state": _selectedState,
-        "roleId": _selectedRole,
-        "fcmToken": "",
-      };
-    }
-    var dataResult = await apiCallBack(
-      method: "POST",
-      path: "/users/register-with-phone.php",
-      body: body,
-    );
+      }
 
-    if (!dataResult['error']) {
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/users/register-with-phone.php",
+        body: body,
+      );
+
+      if (!dataResult['error']) {
+        setState(() => isLoading = false);
+        userData = dataResult['response'];
+        navPopUntilPush(context, const DashboardUI());
+      } else {
+        setState(() => isLoading = false);
+        Navigator.pop(context);
+      }
+      kSnackBar(context,
+          content: dataResult['message'], isDanger: dataResult['error']);
+    } catch (e) {
+      kSnackBar(context, content: e.toString(), isDanger: true);
       setState(() => isLoading = false);
-      userData = dataResult['response'];
-      navPopUntilPush(context, const DashboardUI());
-    } else {
-      setState(() => isLoading = false);
-      Navigator.pop(context);
     }
-    kSnackBar(context,
-        content: dataResult['message'], isDanger: dataResult['error']);
   }
 
   Future<void> registerUsingEmail() async {
-    setState(() => isLoading = true);
-    Map<String, dynamic> body = {};
     try {
-      await OneSignal.shared.getDeviceState().then((value) async {
-        var fcmToken = value!.userId!;
+      setState(() => isLoading = true);
+      Map<String, dynamic> body = {};
+      try {
+        await OneSignal.shared.getDeviceState().then((value) async {
+          var fcmToken = value!.userId!;
+          body = {
+            "firstName": firstName.text,
+            "lastName": lastName.text,
+            "dob": dob.text,
+            "gender": _selectedGender,
+            "phone": phone.text,
+            "email": widget.email,
+            "guid": widget.guid,
+            "specialization": json.encode(selectedSpecialization),
+            "address": address.text,
+            "city": city.text,
+            "state": _selectedState,
+            "roleId": _selectedRole,
+            "subRole": subRolesArr[selectedSubRole],
+            "post": json.encode(selectedPosts),
+            "employmentType": json.encode(selectedEmploymentType),
+            "workSetting": json.encode(selectedWorkSetting),
+            "graduationType": json.encode(selectedGraduationType),
+            "graduationDate": graduationYear.text,
+            "fcmToken": fcmToken.toString(),
+          };
+        });
+      } catch (e) {
         body = {
           "firstName": firstName.text,
           "lastName": lastName.text,
@@ -160,53 +203,48 @@ class _RegisterUIState extends State<RegisterUI> {
           "phone": phone.text,
           "email": widget.email,
           "guid": widget.guid,
-          "specialization": specialization.text,
+          "specialization": json.encode(selectedSpecialization),
           "address": address.text,
           "city": city.text,
           "state": _selectedState,
           "roleId": _selectedRole,
-          "fcmToken": fcmToken.toString(),
+          "subRole": subRolesArr[selectedSubRole],
+          "post": json.encode(selectedPosts),
+          "employmentType": json.encode(selectedEmploymentType),
+          "workSetting": json.encode(selectedWorkSetting),
+          "graduationType": json.encode(selectedGraduationType),
+          "graduationDate": graduationYear.text,
+          "fcmToken": "",
         };
-      });
-    } catch (e) {
-      body = {
-        "firstName": firstName.text,
-        "lastName": lastName.text,
-        "dob": dob.text,
-        "gender": _selectedGender,
-        "phone": phone.text,
-        "email": widget.email,
-        "guid": widget.guid,
-        "specialization": specialization.text,
-        "address": address.text,
-        "city": city.text,
-        "state": _selectedState,
-        "roleId": _selectedRole,
-        "fcmToken": "",
-      };
-    }
-    var dataResult = await apiCallBack(
-      method: "POST",
-      path: "/users/register-with-google.php",
-      body: body,
-    );
+      }
 
-    if (!dataResult['error']) {
-      setState(() => isLoading = false);
-      userData = dataResult['response'];
-      navPopUntilPush(context, const DashboardUI());
-    } else {
+      print(body);
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/users/register-with-google.php",
+        body: body,
+      );
+      print(dataResult);
+      if (!dataResult['error']) {
+        setState(() => isLoading = false);
+        userData = dataResult['response'];
+        navPopUntilPush(context, const DashboardUI());
+      } else {
+        setState(() => isLoading = false);
+      }
+      kSnackBar(context,
+          content: dataResult['message'], isDanger: dataResult['error']);
+    } catch (e) {
+      kSnackBar(context, content: e.toString(), isDanger: true);
       setState(() => isLoading = false);
     }
-    kSnackBar(context,
-        content: dataResult['message'], isDanger: dataResult['error']);
   }
 
-  void _showMultiSelect(
-      {required BuildContext context,
-      required String arrayName,
-      required String header,
-      required String resultArray}) async {
+  void _showMultiSelect({
+    required BuildContext context,
+    required String arrayName,
+    required String header,
+  }) async {
     List itemArray = jsonDecode(rolesList[_selectedRole][arrayName]);
     showModalBottomSheet(
       context: context,
@@ -242,14 +280,16 @@ class _RegisterUIState extends State<RegisterUI> {
                       selectedChipColor: Colors.blue.withOpacity(0.5),
                       selectedTextStyle: TextStyle(color: Colors.blue[800]),
                       onTap: (values) {
-                        if (resultArray == "Posts") {
+                        if (arrayName == "posts") {
                           selectedPosts = values;
-                        } else if (resultArray == "EmploymentType") {
+                        } else if (arrayName == "employmentType") {
                           selectedEmploymentType = values;
-                        } else if (resultArray == "WorkSetting") {
+                        } else if (arrayName == "workSetting") {
                           selectedWorkSetting = values;
-                        } else if (resultArray == "Specialization") {
+                        } else if (arrayName == "specialization") {
                           selectedSpecialization = values;
+                        } else if (arrayName == "graduationType") {
+                          selectedGraduationType = values;
                         }
                       },
                     )
@@ -513,13 +553,13 @@ class _RegisterUIState extends State<RegisterUI> {
                                   ),
                                 ],
                               ),
-                              height10,
                               rolesList[_selectedRole]['subRoles'] == "NULL"
                                   ? SizedBox.shrink()
                                   : Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        height10,
                                         Text(
                                           'Sub Role',
                                           style: TextStyle(
@@ -569,13 +609,13 @@ class _RegisterUIState extends State<RegisterUI> {
                                         ),
                                       ],
                                     ),
-                              height10,
                               rolesList[_selectedRole]['posts'] == "NULL"
                                   ? SizedBox.shrink()
                                   : Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        height10,
                                         Text(
                                           'Post',
                                           style: TextStyle(
@@ -589,7 +629,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                                     context: context,
                                                     arrayName: 'posts',
                                                     header: "Select Posts",
-                                                    resultArray: "Posts",
                                                   );
                                                 },
                                                 child: Text('Select Posts'),
@@ -600,7 +639,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                                     context: context,
                                                     arrayName: 'posts',
                                                     header: "Select Posts",
-                                                    resultArray: "Posts",
                                                   );
                                                 },
                                                 child: Wrap(
@@ -625,7 +663,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                               )
                                       ],
                                     ),
-                              height10,
                               rolesList[_selectedRole]['employmentType'] ==
                                       "NULL"
                                   ? SizedBox.shrink()
@@ -633,13 +670,14 @@ class _RegisterUIState extends State<RegisterUI> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        height10,
                                         Text(
                                           'Employment Type',
                                           style: TextStyle(
                                               fontSize: sdp(context, 9)),
                                         ),
                                         kHeight(7),
-                                        selectedPosts.length == 0
+                                        selectedEmploymentType.length == 0
                                             ? OutlinedButton(
                                                 onPressed: () {
                                                   _showMultiSelect(
@@ -647,8 +685,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                                     arrayName: 'employmentType',
                                                     header:
                                                         "Select Employment Type",
-                                                    resultArray:
-                                                        "EmploymentType",
                                                   );
                                                 },
                                                 child: Text(
@@ -661,8 +697,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                                     arrayName: 'employmentType',
                                                     header:
                                                         "Select Employment Type",
-                                                    resultArray:
-                                                        "EmploymentType",
                                                   );
                                                 },
                                                 child: Wrap(
@@ -689,20 +723,80 @@ class _RegisterUIState extends State<RegisterUI> {
                                               )
                                       ],
                                     ),
-                              height10,
+                              rolesList[_selectedRole]['specialization'] ==
+                                      "NULL"
+                                  ? SizedBox.shrink()
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        height10,
+                                        Text(
+                                          'Specialization',
+                                          style: TextStyle(
+                                              fontSize: sdp(context, 9)),
+                                        ),
+                                        kHeight(7),
+                                        selectedSpecialization.length == 0
+                                            ? OutlinedButton(
+                                                onPressed: () {
+                                                  _showMultiSelect(
+                                                    context: context,
+                                                    arrayName: 'specialization',
+                                                    header:
+                                                        "Select Specialization",
+                                                  );
+                                                },
+                                                child: Text(
+                                                    'Select Specialization'),
+                                              )
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  _showMultiSelect(
+                                                    context: context,
+                                                    arrayName: 'specialization',
+                                                    header:
+                                                        "Select Specialization",
+                                                  );
+                                                },
+                                                child: Wrap(
+                                                  runSpacing: 5,
+                                                  spacing: 5,
+                                                  children: List.generate(
+                                                    selectedEmploymentType
+                                                        .length,
+                                                    (index) {
+                                                      return Container(
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                kPrimaryColorAccentLighter),
+                                                        padding:
+                                                            EdgeInsets.all(8),
+                                                        child: Text(
+                                                          selectedEmploymentType[
+                                                              index],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              )
+                                      ],
+                                    ),
                               rolesList[_selectedRole]['workSetting'] == "NULL"
                                   ? SizedBox.shrink()
                                   : Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        height10,
                                         Text(
                                           'Work Setting',
                                           style: TextStyle(
                                               fontSize: sdp(context, 9)),
                                         ),
                                         kHeight(7),
-                                        selectedPosts.length == 0
+                                        selectedWorkSetting.length == 0
                                             ? OutlinedButton(
                                                 onPressed: () {
                                                   _showMultiSelect(
@@ -710,7 +804,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                                     arrayName: 'workSetting',
                                                     header:
                                                         "Select Work Setting",
-                                                    resultArray: "WorkSetting",
                                                   );
                                                 },
                                                 child:
@@ -723,7 +816,6 @@ class _RegisterUIState extends State<RegisterUI> {
                                                     arrayName: 'workSetting',
                                                     header:
                                                         "Select Work Setting",
-                                                    resultArray: "WorkSetting",
                                                   );
                                                 },
                                                 child: Wrap(
@@ -751,22 +843,84 @@ class _RegisterUIState extends State<RegisterUI> {
                                               )
                                       ],
                                     ),
-                              kTextField(
-                                context,
-                                controller: specialization,
-                                bgColor: Colors.white,
-                                hintText: 'MBBS, MD ...',
-                                label: "Specialization",
-                                keyboardType: TextInputType.text,
-                                textCapitalization:
-                                    TextCapitalization.characters,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'This field is required!';
-                                  }
-                                  return null;
-                                },
-                              ),
+                              rolesList[_selectedRole]['graduationType'] ==
+                                      "NULL"
+                                  ? SizedBox.shrink()
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        height10,
+                                        Text(
+                                          'Graduation',
+                                          style: TextStyle(
+                                              fontSize: sdp(context, 9)),
+                                        ),
+                                        kHeight(7),
+                                        selectedGraduationType.length == 0
+                                            ? OutlinedButton(
+                                                onPressed: () {
+                                                  _showMultiSelect(
+                                                    context: context,
+                                                    arrayName: 'graduationType',
+                                                    header: "Select Graduation",
+                                                  );
+                                                },
+                                                child:
+                                                    Text('Select Graduation'),
+                                              )
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  _showMultiSelect(
+                                                    context: context,
+                                                    arrayName: 'graduationType',
+                                                    header: "Select Graduation",
+                                                  );
+                                                },
+                                                child: Wrap(
+                                                  runSpacing: 5,
+                                                  spacing: 5,
+                                                  children: List.generate(
+                                                    selectedGraduationType
+                                                        .length,
+                                                    (index) {
+                                                      return Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              kPrimaryColorAccentLighter,
+                                                        ),
+                                                        padding:
+                                                            EdgeInsets.all(8),
+                                                        child: Text(
+                                                          selectedGraduationType[
+                                                              index],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                              rolesList[_selectedRole]['title'] != "Student"
+                                  ? SizedBox.shrink()
+                                  : kTextField(
+                                      context,
+                                      controller: graduationYear,
+                                      bgColor: Colors.white,
+                                      hintText: '2000-2005',
+                                      label: "Graduation Year",
+                                      keyboardType: TextInputType.number,
+                                      textCapitalization:
+                                          TextCapitalization.characters,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
                               height10,
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
