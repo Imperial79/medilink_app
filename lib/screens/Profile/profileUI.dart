@@ -90,7 +90,7 @@ class _ProfileUIState extends State<ProfileUI> {
                                 Text(
                                   userData['roleTitle'].toString() +
                                       ' | ' +
-                                      userData['specialization'].toString(),
+                                      userData['subRole'].toString(),
                                   style: TextStyle(
                                     fontSize: sdp(context, 10),
                                   ),
