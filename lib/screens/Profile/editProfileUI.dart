@@ -31,6 +31,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
   final address = TextEditingController();
   final dob = TextEditingController();
   final role = TextEditingController();
+  final bio = TextEditingController();
   final graduationDate = TextEditingController();
   String _selectedGender = userData['gender'];
   String _selectedState = userData['state'];
@@ -55,6 +56,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
     address.text = userData['address'];
     role.text = userData['roleTitle'];
     dob.text = userData['dob'];
+    bio.text = userData['bio'];
     graduationDate.text = userData['graduationDate'];
   }
 
@@ -69,6 +71,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
     city.dispose();
     address.dispose();
     role.dispose();
+    bio.dispose();
     graduationDate.dispose();
     dob.dispose();
   }
@@ -120,6 +123,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
           "subRole": subRole.text,
           "specialization": json.encode(selectedSpecialization),
           "post": json.encode(selectedPosts),
+          "bio": bio.text,
           "employmentType": json.encode(selectedEmploymentType),
           "workSetting": json.encode(selectedWorkSetting),
           "graduationType": json.encode(selectedGraduationType),
@@ -137,6 +141,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
         userData["gender"] = _selectedGender;
         userData["specialization"] = subRole.text;
         userData["address"] = address.text;
+        userData["bio"] = bio.text;
         userData["city"] = city.text;
         userData["state"] = _selectedState;
       }
@@ -278,6 +283,24 @@ class _EditProfileUIState extends State<EditProfileUI> {
                         ),
                       ),
                       height20,
+                      kTextField(
+                        context,
+                        controller: bio,
+                        bgColor: Colors.white,
+                        hintText: 'About me',
+                        minLines: 1,
+                        maxLines: 5,
+                        label: "Bio",
+                        keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'This field is required!';
+                          }
+                          return null;
+                        },
+                      ),
+                      height10,
                       Row(
                         children: [
                           Flexible(
