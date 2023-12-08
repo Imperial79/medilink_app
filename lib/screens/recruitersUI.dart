@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
@@ -29,6 +31,12 @@ class _RecruitersUIState extends State<RecruitersUI> {
   }
 
   _scrollListener() {
+    if (scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      isNavOpen.value = true;
+    } else {
+      isNavOpen.value = false;
+    }
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
       pageNo += 1;
@@ -121,64 +129,80 @@ class _RecruitersUIState extends State<RecruitersUI> {
   }
 
   Widget _hero(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          color: Color(0xFFDEE1FB),
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                kPageHeader(
-                  context,
-                  title: 'Recruiters',
-                  subtitle: 'Start following recruiters',
-                ),
-                height10,
-                _searchBar(),
-                height15,
-              ],
-            ),
-          ),
-        ),
-        height10,
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+    return ValueListenableBuilder(
+        valueListenable: isNavOpen,
+        builder: (context, isOpen, _) {
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Wrap(
-                alignment: WrapAlignment.start,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 10,
-                children: [
-                  Text(
-                    'Filters: ',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontWeight: FontWeight.w500,
-                      fontSize: sdp(context, 10),
-                    ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                color: Color(0xFFDEE1FB),
+                child: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AnimatedSize(
+                        alignment: Alignment.topCenter,
+                        duration: Duration(milliseconds: 200),
+                        child: isOpen
+                            ? Container(
+                                width: double.infinity,
+                                child: kPageHeader(
+                                  context,
+                                  title: 'Recruiters',
+                                  subtitle: 'Start following recruiters',
+                                ),
+                              )
+                            : Container(
+                                width: double.infinity,
+                              ),
+                      ),
+                      height10,
+                      _searchBar(),
+                      height15,
+                    ],
                   ),
-                  homePill(
-                      label: (city.text.isEmpty ? 'Anywhere' : city.text) +
-                          ', ' +
-                          selectedState),
-                ],
+                ),
               ),
               height10,
-              Text(
-                'Filtered Recruiters',
-                style: kSubtitleStyle(context, color: Colors.black),
-              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.start,
+                      runAlignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 10,
+                      children: [
+                        Text(
+                          'Filters: ',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontWeight: FontWeight.w500,
+                            fontSize: sdp(context, 10),
+                          ),
+                        ),
+                        homePill(
+                            label:
+                                (city.text.isEmpty ? 'Anywhere' : city.text) +
+                                    ', ' +
+                                    selectedState),
+                      ],
+                    ),
+                    height10,
+                    Text(
+                      'Filtered Recruiters',
+                      style: kSubtitleStyle(context, color: Colors.black),
+                    ),
+                  ],
+                ),
+              )
             ],
-          ),
-        )
-      ],
-    );
+          );
+        });
   }
 
   Widget _searchBar() {
@@ -390,7 +414,16 @@ class _RecruitersUIState extends State<RecruitersUI> {
     bool hasShadow = true,
   }) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: kScaffoldColor,
+          isScrollControlled: true,
+          builder: (context) {
+            return filterModalSheet();
+          },
+        );
+      },
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Container(

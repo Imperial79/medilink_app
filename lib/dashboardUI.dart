@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/screens/Profile/profileUI.dart';
 import 'package:medilink/screens/recruitersUI.dart';
@@ -11,6 +12,7 @@ import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 
 ValueNotifier activeTabGlobal = new ValueNotifier(0);
+ValueNotifier isNavOpen = new ValueNotifier(true);
 
 class DashboardUI extends StatefulWidget {
   const DashboardUI({super.key});
@@ -30,6 +32,20 @@ class _DashboardUIState extends State<DashboardUI> {
   @override
   void initState() {
     super.initState();
+
+    // _controller.addListener(() {
+    //   if (_controller.position.userScrollDirection == ScrollDirection.forward) {
+    //     setState(() {
+    //       isNavOpen.value = true;
+    //       print('scroll for');
+    //     });
+    //   } else {
+    //     setState(() {
+    //       isNavOpen.value = true;
+    //       print('scroll back');
+    //     });
+    //   }
+    // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchSurvey();
     });
@@ -87,7 +103,16 @@ class _DashboardUIState extends State<DashboardUI> {
                 index: activeTabGlobal.value,
                 children: screens,
               ),
-              bottomNavigationBar: kNavigationBar(),
+              bottomNavigationBar: ValueListenableBuilder(
+                valueListenable: isNavOpen,
+                builder: (context, isOpen, _) {
+                  return AnimatedContainer(
+                    height: isOpen ? 100 : 0,
+                    duration: Duration(milliseconds: 200),
+                    child: Wrap(children: [kNavigationBar()]),
+                  );
+                },
+              ),
             );
           }),
     );

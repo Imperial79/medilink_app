@@ -282,6 +282,7 @@ Widget kTextField(
           Flexible(
             child: TextFormField(
               controller: controller,
+              enabled: !readOnly,
               onTap: onFieldTap,
               readOnly: readOnly,
               cursorColor: kPrimaryColorAccent,
@@ -302,6 +303,10 @@ Widget kTextField(
                 counterText: '',
                 filled: true,
                 fillColor: bgColor,
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: kRadius(10),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: kRadius(10),
                   borderSide: BorderSide(color: kPrimaryColor),
