@@ -60,20 +60,12 @@ class _ProfileUIState extends State<ProfileUI> {
                             onTap: () {
                               navPush(context, EditProfileUI());
                             },
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.purple.shade100,
-                                shape: BoxShape.circle,
-                              ),
-                              child: CircleAvatar(
-                                radius: 22,
-                                backgroundImage:
-                                    NetworkImage(userData['image']),
-                              ),
+                            child: CircleAvatar(
+                              radius: 22,
+                              backgroundImage: NetworkImage(userData['image']),
                             ),
                           ),
-                          width20,
+                          width10,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +92,7 @@ class _ProfileUIState extends State<ProfileUI> {
                           ),
                         ],
                       ),
-                      height10,
+                      height15,
                       GestureDetector(
                         onTap: () {
                           navPush(context, EditProfileUI());

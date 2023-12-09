@@ -62,34 +62,35 @@ class _SavedUIState extends State<SavedUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.0),
-        child: SafeArea(
+      appBar: AppBar(
+        title: kPageHeader(
+          context,
+          title: 'Saved',
+          subtitle: 'Find your saved or bookmarked job profiles here',
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: pullRefresher,
+        child: SingleChildScrollView(
+          controller: scrollController,
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
+          physics: AlwaysScrollableScrollPhysics(),
           child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              kPageHeader(
-                context,
-                title: 'Saved',
-                subtitle: 'Find your saved or bookmarked job profiles here',
-              ),
               height20,
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: pullRefresher,
-                  child: bookmarkedVacancies.length == 0
-                      ? Center(child: Image.asset("assets/images/no-data.jpg"))
-                      : ListView.builder(
-                          controller: scrollController,
-                          itemCount: bookmarkedVacancies.length,
-                          shrinkWrap: true,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return JobCard(data: bookmarkedVacancies[index]);
-                          },
-                        ),
-                ),
-              ),
+              bookmarkedVacancies.length == 0
+                  ? Center(child: Image.asset("assets/images/no-data.jpg"))
+                  : ListView.builder(
+                      itemCount: bookmarkedVacancies.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return JobCard(data: bookmarkedVacancies[index]);
+                      },
+                    ),
             ],
           ),
         ),

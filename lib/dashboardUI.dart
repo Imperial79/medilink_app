@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/screens/Profile/profileUI.dart';
 import 'package:medilink/screens/recruitersUI.dart';
@@ -32,20 +31,6 @@ class _DashboardUIState extends State<DashboardUI> {
   @override
   void initState() {
     super.initState();
-
-    // _controller.addListener(() {
-    //   if (_controller.position.userScrollDirection == ScrollDirection.forward) {
-    //     setState(() {
-    //       isNavOpen.value = true;
-    //       print('scroll for');
-    //     });
-    //   } else {
-    //     setState(() {
-    //       isNavOpen.value = true;
-    //       print('scroll back');
-    //     });
-    //   }
-    // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchSurvey();
     });
@@ -177,13 +162,18 @@ class _DashboardUIState extends State<DashboardUI> {
         },
         child: Column(
           children: [
-            SvgPicture.asset(
-              'assets/icons/$icon.svg',
-              height: sdp(context, 15),
-              colorFilter: kSvgColor(
-                _isSelected ? kPrimaryColor : kPrimaryColorAccent,
-              ),
-            ),
+            index == 3
+                ? CircleAvatar(
+                    radius: sdp(context, 8),
+                    backgroundImage: NetworkImage(userData['image']),
+                  )
+                : SvgPicture.asset(
+                    'assets/icons/$icon.svg',
+                    height: sdp(context, 15),
+                    colorFilter: kSvgColor(
+                      _isSelected ? kPrimaryColor : kPrimaryColorAccent,
+                    ),
+                  ),
             height5,
             SizedBox(
               width: 80,
