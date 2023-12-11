@@ -3,6 +3,7 @@ import 'package:medilink/Job%20detail%20screen/jobCard.dart';
 // import 'package:medilink/Job%20Card/jobCard.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
+import 'package:medilink/utils/sdp.dart';
 
 class SavedUI extends StatefulWidget {
   const SavedUI({super.key});
@@ -63,6 +64,8 @@ class _SavedUIState extends State<SavedUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: sdp(context, 45),
+        automaticallyImplyLeading: false,
         title: kPageHeader(
           context,
           title: 'Saved',

@@ -267,134 +267,132 @@ class _RecruitersUIState extends State<RecruitersUI> {
   }
 
   Widget filterModalSheet() {
-    Widget subHeading(text) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: sdp(context, 12),
-              fontWeight: FontWeight.w500,
-            ),
+    Widget subHeading(text) => Text(
+          text,
+          style: TextStyle(
+            fontSize: sdp(context, 12),
+            fontWeight: FontWeight.w500,
           ),
         );
     return StatefulBuilder(
       builder: (context, setState) {
         return SafeArea(
           child: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Filter',
-                        style: kTitleStyle(context),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      city.clear();
+                    });
+                  },
+                  child: Text('Clear filters'),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Filter',
+                      style: kTitleStyle(context),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        pageNo = 0;
+                        vacancyList = [];
+                        fetchRecruiters();
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor: kPrimaryColor,
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          pageNo = 0;
-                          vacancyList = [];
-                          fetchRecruiters();
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: kPrimaryColor,
-                        ),
-                        child: Text(
-                          'Apply',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                      child: Text(
+                        'Apply',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 subHeading('Preferred Location'),
                 height10,
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: kTextField(
-                          context,
-                          controller: city,
-                          bgColor: Colors.white,
-                          hintText: 'Bengaluru, Mumbai',
-                          label: "City",
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'This is empty!';
-                            }
-                            return null;
-                          },
-                        ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: kTextField(
+                        context,
+                        controller: city,
+                        bgColor: Colors.white,
+                        hintText: 'Bengaluru, Mumbai',
+                        label: "City",
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'This is empty!';
+                          }
+                          return null;
+                        },
                       ),
-                      width10,
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'State',
-                              style: TextStyle(fontSize: sdp(context, 9)),
+                    ),
+                    width10,
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'State',
+                            style: TextStyle(fontSize: sdp(context, 9)),
+                          ),
+                          kHeight(7),
+                          Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              borderRadius: kRadius(10),
+                              border: Border.all(color: Colors.grey.shade400),
                             ),
-                            kHeight(7),
-                            Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                borderRadius: kRadius(10),
-                                border: Border.all(color: Colors.grey.shade400),
+                            child: DropdownButton(
+                              value: selectedState,
+                              underline: SizedBox.shrink(),
+                              isDense: true,
+                              menuMaxHeight:
+                                  MediaQuery.of(context).size.height * .5,
+                              isExpanded: true,
+                              dropdownColor: Colors.white,
+                              borderRadius: kRadius(10),
+                              alignment: AlignmentDirectional.bottomCenter,
+                              elevation: 24,
+                              padding: EdgeInsets.all(8),
+                              icon: Icon(Icons.keyboard_arrow_down_rounded),
+                              iconSize: 20,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Montserrat',
                               ),
-                              child: DropdownButton(
-                                value: selectedState,
-                                underline: SizedBox.shrink(),
-                                isDense: true,
-                                menuMaxHeight:
-                                    MediaQuery.of(context).size.height * .5,
-                                isExpanded: true,
-                                dropdownColor: Colors.white,
-                                borderRadius: kRadius(10),
-                                alignment: AlignmentDirectional.bottomCenter,
-                                elevation: 24,
-                                padding: EdgeInsets.all(8),
-                                icon: Icon(Icons.keyboard_arrow_down_rounded),
-                                iconSize: 20,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Montserrat',
-                                ),
-                                items:
-                                    List.generate(statesList.length, (index) {
-                                  return DropdownMenuItem(
-                                    value: statesList[index]['stateName']
-                                        .toString(),
-                                    child: Text(statesList[index]['stateName']),
-                                  );
-                                }),
-                                onChanged: (value) {
-                                  setState(
-                                    () {
-                                      selectedState = value!;
-                                    },
-                                  );
-                                },
-                              ),
+                              items: List.generate(statesList.length, (index) {
+                                return DropdownMenuItem(
+                                  value:
+                                      statesList[index]['stateName'].toString(),
+                                  child: Text(statesList[index]['stateName']),
+                                );
+                              }),
+                              onChanged: (value) {
+                                setState(
+                                  () {
+                                    selectedState = value!;
+                                  },
+                                );
+                              },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                height20,
                 SizedBox(
                   height: MediaQuery.of(context).viewInsets.bottom,
                 )
