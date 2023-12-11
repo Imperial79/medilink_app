@@ -286,6 +286,7 @@ class _RecruitersUIState extends State<RecruitersUI> {
                   onPressed: () {
                     setState(() {
                       city.clear();
+                      selectedState = 'Pan India';
                     });
                   },
                   child: Text('Clear filters'),

@@ -331,6 +331,7 @@ class _HomeUIState extends State<HomeUI> {
                     setState(() {
                       selectedDistanceRange = '';
                       city.clear();
+                      selectedState = 'Pan India';
                     });
                   },
                   child: Text('Clear filters'),
