@@ -6,10 +6,10 @@ ColorFilter kSvgColorWhite = ColorFilter.mode(Colors.white, BlendMode.srcIn);
 ColorFilter kSvgColor(Color color) => ColorFilter.mode(color, BlendMode.srcIn);
 
 final Color kPrimaryColor = Color(0xFF0114AD);
-final Color kPrimaryColorAccent = Color.fromARGB(255, 148, 158, 244);
-final Color kPrimaryColorAccentLighter = Color.fromARGB(255, 209, 212, 247);
+final Color kPrimaryColorAccent = Color(0xFF949EF4);
+final Color kPrimaryColorAccentLighter = Color(0xFFD1D4F7);
 final Color kScaffoldColor = Colors.white;
-final Color kPillButtonColor = Color.fromARGB(255, 6, 113, 159);
+final Color kPillButtonColor = Color(0xFF06719F);
 const Color kPillColor = Color(0xFFDEE1FB);
 final Color kCircleAvatarColor =
     ColorScheme.fromSeed(seedColor: kPrimaryColor).primaryContainer;
