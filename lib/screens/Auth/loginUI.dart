@@ -10,8 +10,6 @@ import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 
 class LoginUI extends StatefulWidget {
   const LoginUI({super.key});
@@ -22,8 +20,7 @@ class LoginUI extends StatefulWidget {
 
 class _LoginUIState extends State<LoginUI> {
   final phone = TextEditingController();
-  final otpController = OtpFieldController();
-  String otp = '';
+  final otp = TextEditingController();
 
   bool isLoading = false;
   bool isOtpSent = false;
@@ -78,6 +75,8 @@ class _LoginUIState extends State<LoginUI> {
       setState(() {
         if (dataResult['action'] == 'Register') {
           isRegister = true;
+        } else {
+          isRegister = false;
         }
         isLoading = false;
         isOtpSent = true;
@@ -98,7 +97,7 @@ class _LoginUIState extends State<LoginUI> {
       path: "/sms-service/verify-otp.php",
       body: {
         "phone": phone.text,
-        "otp": otp,
+        "otp": otp.text,
       },
     );
 
@@ -109,7 +108,11 @@ class _LoginUIState extends State<LoginUI> {
       navPush(
         context,
         RegisterUI(
-            type: "Phone", phone: phone.text, otp: otp, email: '', guid: ''),
+            type: "Phone",
+            phone: phone.text,
+            otp: otp.text,
+            email: '',
+            guid: ''),
       );
     } else {
       setState(() => isLoading = false);
@@ -126,14 +129,14 @@ class _LoginUIState extends State<LoginUI> {
         var fcmToken = value!.userId!;
         body = {
           "phone": phone.text,
-          "otp": otp,
+          "otp": otp.text,
           "fcmToken": fcmToken.toString(),
         };
       });
     } catch (e) {
       body = {
         "phone": phone.text,
-        "otp": otp,
+        "otp": otp.text,
         "fcmToken": "",
       };
     }
@@ -286,56 +289,35 @@ class _LoginUIState extends State<LoginUI> {
                       keyboardType: TextInputType.phone,
                     ),
                     height10,
-                    Text(
-                      'Enter OTP',
-                      style: TextStyle(fontSize: sdp(context, 9)),
-                    ),
-                    kHeight(7),
-                    Container(
-                      padding: EdgeInsets.only(right: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: kRadius(10),
-                        border: Border.all(
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: OTPTextField(
-                              controller: otpController,
-                              length: 5,
-                              margin: EdgeInsets.only(bottom: 10),
-                              keyboardType: TextInputType.number,
-                              width: MediaQuery.of(context).size.width,
-                              fieldWidth: sdp(context, 20),
-                              style: TextStyle(fontSize: 17),
-                              textFieldAlignment: MainAxisAlignment.spaceAround,
-                              fieldStyle: FieldStyle.underline,
-                              onCompleted: (pin) {
-                                setState(() {
-                                  otp = pin.toString();
-                                });
-                              },
-                            ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: kTextField(
+                            context,
+                            controller: otp,
+                            bgColor: Colors.white,
+                            hintText: 'XXXXX',
+                            label: 'Enter OTP',
+                            maxLength: 7,
+                            keyboardType: TextInputType.number,
                           ),
-                          width10,
-                          // kTextButton(onTap: () {}, child: Text("Send OTP")),
-                          MaterialButton(
-                            onPressed: () {
-                              sendOTP();
-                            },
-                            shape: RoundedRectangleBorder(
-                              borderRadius: kRadius(100),
-                            ),
-                            color: kPrimaryColor,
-                            elevation: 0,
-                            textColor: Colors.white,
-                            child: Text('SEND OTP'),
-                          )
-                        ],
-                      ),
+                        ),
+                        width10,
+                        // kTextButton(onTap: () {}, child: Text("Send OTP")),
+                        MaterialButton(
+                          onPressed: () {
+                            sendOTP();
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: kRadius(100),
+                          ),
+                          color: kPrimaryColor,
+                          elevation: 0,
+                          textColor: Colors.white,
+                          child: Text('SEND OTP'),
+                        )
+                      ],
                     ),
                     height20,
                     ElevatedButton(

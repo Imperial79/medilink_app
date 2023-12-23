@@ -345,11 +345,9 @@ class _EditProfileUIState extends State<EditProfileUI> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Flexible(
-                            child: kTextField(
-                              context,
-                              controller: dob,
-                              readOnly: true,
-                              onFieldTap: () async {
+                            child: GestureDetector(
+                              onTap: () async {
+                                print('ddd');
                                 await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.parse(userData['dob']),
@@ -365,16 +363,21 @@ class _EditProfileUIState extends State<EditProfileUI> {
                                   });
                                 });
                               },
-                              bgColor: Colors.white,
-                              hintText: '1998-06-29',
-                              label: "DOB",
-                              keyboardType: TextInputType.datetime,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This field is required!';
-                                }
-                                return null;
-                              },
+                              child: kTextField(
+                                context,
+                                controller: dob,
+                                readOnly: true,
+                                bgColor: Colors.white,
+                                hintText: '1998-06-29',
+                                label: "DOB",
+                                keyboardType: TextInputType.datetime,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'This field is required!';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
                           ),
                           width10,

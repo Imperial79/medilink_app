@@ -59,6 +59,7 @@ class _RecruitersUIState extends State<RecruitersUI> {
   Future<void> fetchRecruiters() async {
     try {
       setState(() => isLoading = true);
+
       var dataResult = await apiCallBack(
         method: "POST",
         path: "/recruiters/fetch-recruiters.php",
@@ -285,6 +286,7 @@ class _RecruitersUIState extends State<RecruitersUI> {
                 TextButton(
                   onPressed: () {
                     setState(() {
+                      searchKey.clear();
                       city.clear();
                       selectedState = 'Pan India';
                     });
@@ -598,7 +600,9 @@ class _RecruitersUIState extends State<RecruitersUI> {
                 padding: EdgeInsets.only(top: 10),
                 child: Text(
                   data['bio'],
+                  maxLines: 3,
                   style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
                     fontSize: sdp(context, 8),
                     fontWeight: FontWeight.w600,
                   ),

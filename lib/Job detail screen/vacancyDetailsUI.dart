@@ -17,6 +17,7 @@ class VacancyDetailUI extends StatefulWidget {
 
 class _VacancyDetailUIState extends State<VacancyDetailUI> {
   bool isLoading = false;
+  bool isApplied = true;
   Map<dynamic, dynamic> vacancyDetail = {};
   List tagsList = [];
 
@@ -36,11 +37,12 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
           "vacancyId": widget.vacancyId,
         },
       );
-
       if (!dataResult['error']) {
         setState(() {
           vacancyDetail = dataResult['response'];
           tagsList = vacancyDetail['tags'].split("#");
+          tagsList.removeAt(0);
+          isApplied = vacancyDetail['isApplied'] == 'true';
         });
       } else {
         vacancyDetail = {};
@@ -108,6 +110,8 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
                       height10,
                       Text(
                         vacancyDetail['roleTitle'] +
+                            ' | ' +
+                            vacancyDetail['subRole'] +
                             ' | ' +
                             vacancyDetail['companyName'],
                         style: TextStyle(
@@ -226,39 +230,41 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            if (vacancyDetail.isEmpty) {
-              kSnackBar(context,
-                  content: "This vacancy is expired. Try different");
-            } else {
-              navPush(
-                  context, SubmitApplicationUI(vacancyDetail: vacancyDetail));
-            }
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 16),
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: kRadius(100),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.shade700.withOpacity(0.2),
-                  blurRadius: 200,
-                  spreadRadius: 60,
-                  offset: Offset(0, 10),
+      floatingActionButton: isApplied
+          ? SizedBox.shrink()
+          : SafeArea(
+              child: GestureDetector(
+                onTap: () {
+                  if (vacancyDetail.isEmpty) {
+                    kSnackBar(context,
+                        content: "This vacancy is expired. Try different");
+                  } else {
+                    navPush(context,
+                        SubmitApplicationUI(vacancyDetail: vacancyDetail));
+                  }
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 16),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: kRadius(100),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.shade700.withOpacity(0.2),
+                        blurRadius: 200,
+                        spreadRadius: 60,
+                        offset: Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Apply Now',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                 ),
-              ],
+              ),
             ),
-            child: Text(
-              'Apply Now',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
     );
   }
 

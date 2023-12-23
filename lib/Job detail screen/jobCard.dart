@@ -23,6 +23,7 @@ class _JobCardState extends State<JobCard> {
   void initState() {
     super.initState();
     tagsList = data['tags'].split("#");
+    tagsList.removeAt(0);
   }
 
   Future<void> bookmarkVacancy(vacancyId) async {

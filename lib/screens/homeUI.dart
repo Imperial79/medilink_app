@@ -138,8 +138,6 @@ class _HomeUIState extends State<HomeUI> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       height10,
-                      header(context),
-                      height5,
                       AnimatedContainer(
                         height: isOpen ? 40 : 0,
                         duration: Duration(milliseconds: 200),
@@ -181,7 +179,9 @@ class _HomeUIState extends State<HomeUI> {
                                 (city.text.isEmpty ? 'Anywhere' : city.text) +
                                     ', ' +
                                     selectedState),
-                        homePill(label: selectedDistanceRange + ' km'),
+                        selectedDistanceRange == ''
+                            ? SizedBox.shrink()
+                            : homePill(label: selectedDistanceRange + ' km'),
                       ],
                     ),
                     height10,
@@ -195,57 +195,6 @@ class _HomeUIState extends State<HomeUI> {
             ],
           );
         });
-  }
-
-  //  Home Widgets -------------------->
-  Row header(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // RichText(
-        //   text: TextSpan(
-        //     style: TextStyle(
-        //       color: Colors.black,
-        //       fontWeight: FontWeight.w600,
-        //       fontSize: sdp(context, 12),
-        //       fontFamily: 'Poppins',
-        //     ),
-        //     children: [
-        //       TextSpan(
-        //         text: 'Hey, ',
-        //         style: TextStyle(
-        //           fontWeight: FontWeight.w400,
-        //         ),
-        //       ),
-        //       TextSpan(
-        //         text: userData['firstName'],
-        //         style: TextStyle(
-        //           color: Colors.black,
-        //           fontWeight: FontWeight.w600,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // GestureDetector(
-        //   onTap: () {
-        //     setState(() {
-        //       activeTabGlobal.value = 3;
-        //     });
-        //   },
-        //   child: Container(
-        //     padding: EdgeInsets.all(5),
-        //     decoration: BoxDecoration(
-        //       color: Colors.purple.shade100,
-        //       shape: BoxShape.circle,
-        //     ),
-        //     child: CircleAvatar(
-        //       backgroundImage: NetworkImage(userData['image']),
-        //     ),
-        //   ),
-        // ),
-      ],
-    );
   }
 
   Widget _searchBar() {
@@ -329,6 +278,7 @@ class _HomeUIState extends State<HomeUI> {
                 TextButton(
                   onPressed: () {
                     setState(() {
+                      searchKey.clear();
                       selectedDistanceRange = '';
                       city.clear();
                       selectedState = 'Pan India';

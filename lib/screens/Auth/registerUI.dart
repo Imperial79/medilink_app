@@ -391,11 +391,8 @@ class _RegisterUIState extends State<RegisterUI> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                    child: kTextField(
-                                      context,
-                                      controller: dob,
-                                      readOnly: true,
-                                      onFieldTap: () async {
+                                    child: GestureDetector(
+                                      onTap: () async {
                                         await showDatePicker(
                                           context: context,
                                           initialDate: DateTime(2000),
@@ -413,16 +410,21 @@ class _RegisterUIState extends State<RegisterUI> {
                                           });
                                         });
                                       },
-                                      bgColor: Colors.white,
-                                      hintText: '1998-06-29',
-                                      label: "DOB",
-                                      keyboardType: TextInputType.datetime,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'This field is required!';
-                                        }
-                                        return null;
-                                      },
+                                      child: kTextField(
+                                        context,
+                                        controller: dob,
+                                        readOnly: true,
+                                        bgColor: Colors.white,
+                                        hintText: '1998-06-29',
+                                        label: "DOB",
+                                        keyboardType: TextInputType.datetime,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'This field is required!';
+                                          }
+                                          return null;
+                                        },
+                                      ),
                                     ),
                                   ),
                                   width10,
