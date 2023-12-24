@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -25,34 +26,17 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
   final subRole = TextEditingController();
   final address = TextEditingController();
   final objective = TextEditingController();
-  List<TextEditingController> expertise = [TextEditingController()];
-  List<Map<dynamic, dynamic>> education = [
-    {
-      'courseName': TextEditingController(),
-      'year': TextEditingController(),
-      'description': TextEditingController(),
-    },
-  ];
-  List<Map<dynamic, dynamic>> work = [
-    {
-      'companyName': TextEditingController(),
-      'designation': TextEditingController(),
-      'year': TextEditingController(),
-      'description': TextEditingController(),
-    },
-  ];
+  List<TextEditingController> expertise = [];
+  List<Map<dynamic, dynamic>> education = [];
+  List<Map<dynamic, dynamic>> work = [];
+
+  Map<dynamic, dynamic> medilinkResume = userData;
 
   @override
   void initState() {
     super.initState();
-    firstName.text = userData['firstName'];
-    lastName.text = userData['lastName'];
-    phone.text = userData['phone'];
-    email.text = userData['email'];
-    profileLink.text = userData['profileLink'];
-    subRole.text = userData['subRole'];
-    address.text = userData['address'];
-    objective.text = userData['bio'];
+    populateData();
+    fetchMedilinkResume();
   }
 
   @override
@@ -68,7 +52,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
     objective.dispose();
   }
 
-  Future<void> fetchResumeBuilderData() async {
+  Future<void> fetchMedilinkResume() async {
     try {
       setState(() => isLoading = true);
       var dataResult = await apiCallBack(
@@ -78,23 +62,65 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
       );
 
       if (!dataResult['error']) {
-        // userData["firstName"] = firstName.text;
-        // userData["lastName"] = lastName.text;
-        // userData["dob"] = dob.text;
-        // userData["gender"] = _selectedGender;
-        // userData["specialization"] = subRole.text;
-        // userData["address"] = address.text;
-        // userData["bio"] = bio.text;
-        // userData["city"] = city.text;
-        // userData["state"] = _selectedState;
+        medilinkResume = dataResult['response'];
       }
-      kSnackBar(context,
-          content: dataResult['message'], isDanger: dataResult['error']);
+
+      populateData();
 
       setState(() => isLoading = false);
     } catch (e) {
       setState(() => isLoading = false);
     }
+  }
+
+  populateData() {
+    firstName.text = medilinkResume['firstName'];
+    lastName.text = medilinkResume['lastName'];
+    phone.text = medilinkResume['phone'];
+    email.text = medilinkResume['email'];
+    profileLink.text = medilinkResume['profileLink'];
+    subRole.text = medilinkResume['subRole'];
+    address.text = medilinkResume['address'];
+    objective.text = medilinkResume['bio'];
+
+    List expertiseList = jsonDecode(medilinkResume['expertiseDescription'] == ''
+        ? "['']"
+        : medilinkResume['expertiseDescription']);
+    expertise = [];
+    expertiseList.forEach((element) {
+      expertise.add(TextEditingController(text: element));
+    });
+
+    List educationList = jsonDecode(medilinkResume['educationDescription'] == ''
+        ? '[{"courseName":"","year":"","courseDescription":""}]'
+        : medilinkResume['educationDescription']);
+    education = [];
+    educationList.forEach((element) {
+      education.add(
+        {
+          'courseName': TextEditingController(text: element['courseName']),
+          'year': TextEditingController(text: element['year']),
+          'courseDescription':
+              TextEditingController(text: element['courseDescription']),
+        },
+      );
+    });
+
+    List workList = jsonDecode(medilinkResume['workDescription'] == ''
+        ? '[{"companyName":"","designation":"","year":"","workDescription":""}]'
+        : medilinkResume['workDescription']);
+    work = [];
+    workList.forEach((element) {
+      work.add(
+        {
+          'companyName': TextEditingController(text: element['companyName']),
+          'designation': TextEditingController(text: element['designation']),
+          'year': TextEditingController(text: element['year']),
+          'workDescription':
+              TextEditingController(text: element['workDescription']),
+        },
+      );
+    });
   }
 
   _pickImage() async {
@@ -128,52 +154,65 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
     }
   }
 
-  // Future<void> updateProfile() async {
-  //   FocusScope.of(context).unfocus();
-  //   try {
-  //     setState(() => isLoading = true);
-  //     var dataResult = await apiCallBack(
-  //       method: "POST",
-  //       path: "/users/update-profile.php",
-  //       body: {
-  //         "firstName": firstName.text,
-  //         "lastName": lastName.text,
-  //         "dob": dob.text,
-  //         "experience": selectedExperience,
-  //         "gender": _selectedGender,
-  //         "subRole": subRole.text,
-  //         "specialization": json.encode(selectedSpecialization),
-  //         "post": json.encode(selectedPosts),
-  //         "bio": bio.text,
-  //         "employmentType": json.encode(selectedEmploymentType),
-  //         "workSetting": json.encode(selectedWorkSetting),
-  //         "graduationType": json.encode(selectedGraduationType),
-  //         "graduationDate": graduationDate.text,
-  //         "address": address.text,
-  //         "city": city.text,
-  //         "state": _selectedState,
-  //       },
-  //     );
+  Future<void> buildResume() async {
+    FocusScope.of(context).unfocus();
+    try {
+      setState(() => isLoading = true);
 
-  //     if (!dataResult['error']) {
-  //       userData["firstName"] = firstName.text;
-  //       userData["lastName"] = lastName.text;
-  //       userData["dob"] = dob.text;
-  //       userData["gender"] = _selectedGender;
-  //       userData["specialization"] = subRole.text;
-  //       userData["address"] = address.text;
-  //       userData["bio"] = bio.text;
-  //       userData["city"] = city.text;
-  //       userData["state"] = _selectedState;
-  //     }
-  //     kSnackBar(context,
-  //         content: dataResult['message'], isDanger: dataResult['error']);
+      List expertiseValueList = [];
+      expertise.forEach((element) {
+        expertiseValueList.add(element.text);
+      });
 
-  //     setState(() => isLoading = false);
-  //   } catch (e) {
-  //     setState(() => isLoading = false);
-  //   }
-  // }
+      List educationValueList = [];
+      education.forEach((element) {
+        educationValueList.add(
+          {
+            'courseName': element['courseName'].text,
+            'year': element['year'].text,
+            'courseDescription': element['courseDescription'].text,
+          },
+        );
+      });
+
+      List workValueList = [];
+      work.forEach((element) {
+        workValueList.add(
+          {
+            'companyName': element['companyName'].text,
+            'designation': element['designation'].text,
+            'year': element['year'].text,
+            'workDescription': element['workDescription'].text,
+          },
+        );
+      });
+
+      var dataResult = await apiCallBack(
+        method: "POST",
+        path: "/resume/build-resume.php",
+        body: {
+          "firstName": firstName.text,
+          "lastName": lastName.text,
+          "profileLink": profileLink.text,
+          "bio": objective.text,
+          "educationDescription": json.encode(educationValueList),
+          "expertiseDescription": json.encode(expertiseValueList),
+          "workDescription": json.encode(workValueList),
+          "subRole": subRole.text,
+        },
+      );
+
+      print(dataResult);
+      if (!dataResult['error']) {}
+      kSnackBar(context,
+          content: dataResult['message'], isDanger: dataResult['error']);
+
+      setState(() => isLoading = false);
+    } catch (e) {
+      print(e);
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +267,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                                     child: CircleAvatar(
                                       radius: 50,
                                       backgroundImage: NetworkImage(
-                                        userData['image'],
+                                        medilinkResume['image'],
                                       ),
                                     ),
                                   ),
@@ -478,7 +517,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                               {
                                 'courseName': TextEditingController(),
                                 'year': TextEditingController(),
-                                'description': TextEditingController(),
+                                'courseDescription': TextEditingController(),
                               },
                             );
                           });
@@ -506,7 +545,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                                 'companyName': TextEditingController(),
                                 'designation': TextEditingController(),
                                 'year': TextEditingController(),
-                                'description': TextEditingController(),
+                                'workDescription': TextEditingController(),
                               },
                             );
                           });
@@ -529,7 +568,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // buildResume();
+                buildResume();
               }
             },
             child: Text('Create Resume'),
@@ -618,7 +657,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
           height10,
           kTextField(
             context,
-            controller: education[index]['courseDecription'],
+            controller: education[index]['courseDescription'],
             bgColor: Colors.white,
             hintText: 'Describe your course',
             minLines: 1,
@@ -733,7 +772,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
           height10,
           kTextField(
             context,
-            controller: work[index]['description'],
+            controller: work[index]['workDescription'],
             bgColor: Colors.white,
             hintText: 'Describe your work',
             minLines: 1,

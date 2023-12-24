@@ -108,7 +108,17 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
                                   physics: AlwaysScrollableScrollPhysics(),
                                   itemCount: resumeList.length,
                                   itemBuilder: (context, index) {
-                                    return _resumeTile(resumeList[index]);
+                                    return _resumeTile(
+                                      data: resumeList[index],
+                                      onTap: () async {
+                                        if (!await launchUrl(Uri.parse(
+                                            resumeList[index]['resume']))) {
+                                          kSnackBar(context,
+                                              content:
+                                                  "Could not open the link");
+                                        }
+                                      },
+                                    );
                                   },
                                 ),
                         ),
@@ -202,8 +212,7 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
     );
   }
 
-  Widget _resumeTile(var data) {
-    // String _fileName = data.path.split('/').last;
+  Widget _resumeTile({data, onTap}) {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -228,11 +237,7 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
             ),
           ),
           IconButton(
-            onPressed: () async {
-              if (!await launchUrl(Uri.parse(data['resume']))) {
-                throw Exception('Could not launch');
-              }
-            },
+            onPressed: onTap,
             icon: Icon(Icons.file_download_outlined),
           ),
         ],
