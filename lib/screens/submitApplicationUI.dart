@@ -35,7 +35,10 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
         body: {},
       );
       if (!dataResult['error']) {
-        resumeList = dataResult['response'];
+        resumeList = [
+          {'id': '0', 'resumeName': 'Medilink Resume'}
+        ];
+        resumeList.addAll(dataResult['response']);
       }
       setState(() => isLoading = false);
     } catch (e) {
@@ -52,6 +55,7 @@ class _SubmitApplicationUIState extends State<SubmitApplicationUI> {
         body: {
           "vacancyId": widget.vacancyDetail['id'],
           "resumeId": resumeList[_selectedResume]['id'],
+          "optedResumeBuilder": resumeList[_selectedResume]['id'] == '0',
         },
       );
       if (!dataResult['error']) {

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medilink/dashboardUI.dart';
 import 'package:medilink/screens/Profile/editProfileUI.dart';
 import 'package:medilink/screens/Profile/myApplicationsUI.dart';
+import 'package:medilink/screens/Profile/resumeBuilderUI.dart';
 import 'package:medilink/screens/Profile/uploadResumeUI.dart';
 import 'package:medilink/screens/Auth/welcomeUI.dart';
 import 'package:medilink/utils/colors.dart';
@@ -141,6 +142,14 @@ class _ProfileUIState extends State<ProfileUI> {
                     iconPath: 'assets/icons/resume.svg',
                     label: 'Saved Resumes',
                     subtitle: 'View your saved resumes',
+                  ),
+                  settingsButton(
+                    onTap: () {
+                      navPush(context, ResumeBuilderUI());
+                    },
+                    iconPath: 'assets/icons/med-logo.svg',
+                    label: 'Resume Builder',
+                    subtitle: 'Get Medilink Resume',
                   ),
                   settingsButton(
                     onTap: () {

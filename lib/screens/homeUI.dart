@@ -113,10 +113,11 @@ class _HomeUIState extends State<HomeUI> {
                             },
                           ),
                   ),
-                )
+                ),
+                kHeight(20)
               ],
             ),
-            isLoading ? fullScreenLoading(context) : SizedBox()
+            isLoading ? fullScreenLoading(context) : SizedBox(),
           ],
         ),
       ),

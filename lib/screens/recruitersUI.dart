@@ -120,6 +120,7 @@ class _RecruitersUIState extends State<RecruitersUI> {
                           ),
                   ),
                 ),
+                kHeight(20)
               ],
             ),
             isLoading ? fullScreenLoading(context) : SizedBox()

@@ -111,7 +111,8 @@ class _JobCardState extends State<JobCard> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: Text(
-                data['roleTitle'] + ' | ' + data['companyName'],
+                data['roleTitle'] +
+                    (data['subRole'] != '' ? (' | ' + data['subRole']) : ''),
                 style: TextStyle(
                     fontSize: sdp(context, 13),
                     fontWeight: FontWeight.w600,
@@ -125,7 +126,7 @@ class _JobCardState extends State<JobCard> {
                 children: [
                   Flexible(
                     child: Text(
-                      'Posted on ' + formatDate(data['postDate']),
+                      data['companyName'],
                       style: TextStyle(
                         fontSize: sdp(context, 9),
                         color: Colors.black,
@@ -149,6 +150,16 @@ class _JobCardState extends State<JobCard> {
                     size: sdp(context, 10),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(
+                'Posted on ' + formatDate(data['postDate']),
+                style: TextStyle(
+                  fontSize: sdp(context, 9),
+                  color: Colors.black,
+                ),
               ),
             ),
             height10,

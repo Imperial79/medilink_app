@@ -110,22 +110,20 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
                       height10,
                       Text(
                         vacancyDetail['roleTitle'] +
-                            ' | ' +
-                            vacancyDetail['subRole'] +
-                            ' | ' +
-                            vacancyDetail['companyName'],
+                            (vacancyDetail['subRole'] != ''
+                                ? (' | ' + vacancyDetail['subRole'])
+                                : ''),
                         style: TextStyle(
                           fontSize: sdp(context, 12),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      height10,
+                      height5,
                       Row(
                         children: [
                           Flexible(
                             child: Text(
-                              'Posted on ' +
-                                  formatDate(vacancyDetail['postDate']),
+                              vacancyDetail['companyName'],
                               style: TextStyle(
                                 fontSize: sdp(context, 10),
                               ),
@@ -147,6 +145,12 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
                             size: sdp(context, 10),
                           ),
                         ],
+                      ),
+                      Text(
+                        'Posted on ' + formatDate(vacancyDetail['postDate']),
+                        style: TextStyle(
+                          fontSize: sdp(context, 10),
+                        ),
                       ),
                       height20,
                       Row(
