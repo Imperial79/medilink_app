@@ -177,7 +177,7 @@ Widget kTextButton({
   );
 }
 
-Widget kUnorderedList(String text) {
+Widget kUnorderedList(String text, TextStyle? style) {
   return Padding(
     padding: EdgeInsets.only(bottom: 5),
     child: Row(
@@ -186,7 +186,10 @@ Widget kUnorderedList(String text) {
         Text("•"),
         width10,
         Expanded(
-          child: Text(text),
+          child: Text(
+            text,
+            style: style ?? TextStyle(),
+          ),
         ),
       ],
     ),

@@ -94,7 +94,12 @@ List<dynamic> rolesList = [
 List<dynamic> statesList = [
   {"id": "0", "stateName": "Choose State", "abbr": "CS"}
 ];
-List<dynamic> resumeList = [];
+List<dynamic> resumeList = [
+  {
+    "id": 0,
+    "resumeName": "Medilink Resume",
+  }
+];
 List<dynamic> recruitersList = [];
 List<dynamic> appliedVacancies = [];
 List<dynamic> bookmarkedVacancies = [];

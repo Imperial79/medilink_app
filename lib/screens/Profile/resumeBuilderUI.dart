@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -252,7 +253,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                                     ),
                                     padding: EdgeInsets.all(5),
                                     child: CircleAvatar(
-                                      radius: 50,
+                                      radius: 30,
                                       backgroundImage: FileImage(
                                         File(_image!.path),
                                       ),
@@ -265,7 +266,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                                     ),
                                     padding: EdgeInsets.all(5),
                                     child: CircleAvatar(
-                                      radius: 50,
+                                      radius: 30,
                                       backgroundImage: NetworkImage(
                                         medilinkResume['image'],
                                       ),
@@ -279,15 +280,17 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                               Text(
                                 "Upload photo",
                                 style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: sdp(context, 15),
+                                  color: Colors.blue.shade700,
+                                  fontSize: sdp(context, 10),
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               Text(
                                 "Allowed file formats: jpg, jpeg, png",
                                 style: TextStyle(
-                                  color: Colors.grey,
-                                ),
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: sdp(context, 9)),
                               ),
                             ],
                           ),
@@ -479,8 +482,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                                           icon: Icon(
                                             Icons.delete,
                                             color: Colors.red,
-                                          ),
-                                        )
+                                          ))
                                       : SizedBox.shrink()
                                 ],
                               ),
@@ -581,10 +583,10 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
   Widget educationForm(index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 7),
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(7),
+        color: Colors.grey.shade100,
+        borderRadius: kRadius(15),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -607,11 +609,11 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                           education.removeAt(index);
                         });
                       },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                    )
+                      icon: Text(
+                        "Remove",
+                        style: TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.w600),
+                      ))
                   : SizedBox.shrink(),
             ],
           ),
@@ -680,10 +682,10 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
   Widget workForm(index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 7),
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(7),
+        color: Colors.grey.shade100,
+        borderRadius: kRadius(15),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -706,11 +708,11 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
                           work.removeAt(index);
                         });
                       },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                    )
+                      icon: Text(
+                        "Remove",
+                        style: TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.w600),
+                      ))
                   : SizedBox.shrink(),
             ],
           ),

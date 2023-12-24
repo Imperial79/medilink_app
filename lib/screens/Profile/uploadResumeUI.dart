@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:medilink/screens/Resume/medilinkResumeUI.dart';
 import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
@@ -78,7 +79,13 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
       body: {},
     );
     if (!dataResult['error']) {
-      resumeList = dataResult['response'];
+      resumeList = [
+        {
+          "id": 0,
+          "resumeName": "Medilink Resume",
+        }
+      ];
+      resumeList.addAll(dataResult['response']);
     }
     setState(() => isLoading = false);
   }
@@ -111,11 +118,15 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
                                     return _resumeTile(
                                       data: resumeList[index],
                                       onTap: () async {
-                                        if (!await launchUrl(Uri.parse(
-                                            resumeList[index]['resume']))) {
-                                          kSnackBar(context,
-                                              content:
-                                                  "Could not open the link");
+                                        if (index == 0) {
+                                          navPush(context, MedilinkResumeUI());
+                                        } else {
+                                          if (!await launchUrl(Uri.parse(
+                                              resumeList[index]['resume']))) {
+                                            kSnackBar(context,
+                                                content:
+                                                    "Could not open the link");
+                                          }
                                         }
                                       },
                                     );
@@ -213,34 +224,42 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
   }
 
   Widget _resumeTile({data, onTap}) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade400),
-        borderRadius: kRadius(15),
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/icons/resume.svg',
-            colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
-            height: sdp(context, 20),
-          ),
-          width10,
-          Expanded(
-            child: Text(
-              data['resumeName'],
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 10),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade400),
+          borderRadius: kRadius(15),
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/icons/resume.svg',
+              colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
+              height: sdp(context, 20),
+            ),
+            width10,
+            Expanded(
+              child: Text(
+                data['resumeName'],
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-          IconButton(
-            onPressed: onTap,
-            icon: Icon(Icons.file_download_outlined),
-          ),
-        ],
+            IconButton(
+              onPressed: onTap,
+              icon: Icon(
+                data['id'] == 0
+                    ? Icons.arrow_forward_ios
+                    : Icons.file_download_outlined,
+                size: 15,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
