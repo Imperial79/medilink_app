@@ -365,9 +365,17 @@ class _MedilinkResumeUIState extends State<MedilinkResumeUI> {
                     ),
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Created by Medilink©',
-                        style: TextStyle(fontSize: sdp(context, 10)),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Created by',
+                            style: TextStyle(fontSize: sdp(context, 10)),
+                          ),
+                          Image.asset(
+                            'assets/images/landscape-logo.jpg',
+                            height: sdp(context, 20),
+                          ),
+                        ],
                       ),
                     ),
                   ],
