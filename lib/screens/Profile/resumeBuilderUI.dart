@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:medilink/utils/colors.dart';
 import 'package:medilink/utils/components.dart';
 import 'package:medilink/utils/constants.dart';
 import 'package:medilink/utils/sdp.dart';
@@ -85,7 +84,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
     objective.text = medilinkResume['bio'];
 
     List expertiseList = jsonDecode(medilinkResume['expertiseDescription'] == ''
-        ? "['']"
+        ? '[""]'
         : medilinkResume['expertiseDescription']);
     expertise = [];
     expertiseList.forEach((element) {
@@ -203,7 +202,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
         },
       );
 
-      print(dataResult);
+      // print(dataResult);
       if (!dataResult['error']) {}
       kSnackBar(context,
           content: dataResult['message'], isDanger: dataResult['error']);

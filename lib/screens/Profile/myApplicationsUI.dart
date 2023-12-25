@@ -29,7 +29,6 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
   _scrollListener() {
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
-      print("At bottom");
       pageNo += 1;
       fetchAppliedVacancies();
     }
@@ -91,13 +90,13 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
   }
 
   Widget _appliedJobsCard(var data) {
-    Color statusBgColor = Colors.red;
+    Color statusBgColor = Colors.red.shade300;
     if (data['status'] == 'Applied') {
-      statusBgColor = Colors.yellow;
+      statusBgColor = Colors.yellow.shade300;
     } else if (data['status'] == 'In-Review') {
-      statusBgColor = Colors.purple;
+      statusBgColor = Colors.purple.shade300;
     } else if (data['status'] == 'Selected') {
-      statusBgColor = Colors.green;
+      statusBgColor = Colors.green.shade300;
     }
 
     return GestureDetector(
@@ -190,25 +189,31 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                   height: sdp(context, 10),
                 ),
                 width10,
-                Text(
-                  data['resumeName'],
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: sdp(context, 9),
+                Expanded(
+                  child: Text(
+                    data['resumeName'],
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w400,
+                      fontSize: sdp(context, 9),
+                    ),
                   ),
                 ),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: statusBgColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    data['status'],
-                  ),
-                )
               ],
+            ),
+            height10,
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: statusBgColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  data['status'],
+                ),
+              ),
             )
           ],
         ),

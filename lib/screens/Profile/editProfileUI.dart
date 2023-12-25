@@ -138,10 +138,17 @@ class _EditProfileUIState extends State<EditProfileUI> {
         userData["firstName"] = firstName.text;
         userData["lastName"] = lastName.text;
         userData["dob"] = dob.text;
+        userData["experience"] = selectedExperience;
         userData["gender"] = _selectedGender;
-        userData["specialization"] = subRole.text;
-        userData["address"] = address.text;
+        userData["subRole"] = subRole.text;
+        userData["specialization"] = json.encode(selectedSpecialization);
+        userData["post"] = json.encode(selectedPosts);
         userData["bio"] = bio.text;
+        userData["employmentType"] = json.encode(selectedEmploymentType);
+        userData["workSetting"] = json.encode(selectedWorkSetting);
+        userData["graduationType"] = json.encode(selectedGraduationType);
+        userData["graduationDate"] = graduationDate.text;
+        userData["address"] = address.text;
         userData["city"] = city.text;
         userData["state"] = _selectedState;
       }
