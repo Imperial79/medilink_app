@@ -84,7 +84,7 @@ class _ResumeBuilderUIState extends State<ResumeBuilderUI> {
     objective.text = medilinkResume['bio'];
 
     List expertiseList = jsonDecode(medilinkResume['expertiseDescription'] == ''
-        ? "['']"
+        ? '[""]'
         : medilinkResume['expertiseDescription']);
     expertise = [];
     expertiseList.forEach((element) {
