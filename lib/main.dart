@@ -28,7 +28,7 @@ class _MainAppState extends State<MainApp> {
   void configOneSignel() {
     OneSignal.shared.setAppId("6e30bde6-eb38-4154-bb9c-98d8799ae37c");
   }
-
+  
   @override
   Widget build(BuildContext context) {
     kSystemColors();

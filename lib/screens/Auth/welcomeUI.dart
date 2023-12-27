@@ -23,21 +23,6 @@ class _WelcomeUIState extends State<WelcomeUI> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(child: Image.asset('assets/images/medLink.jpg')),
-              // Text(
-              //   'Medilink',
-              //   style: kTitleStyle(
-              //     context,
-              //     fontSize: sdp(context, 20),
-              //     fontWeight: FontWeight.w700,
-              //   ),
-              // ),
-              // Text(
-              //   'Find jobs that fulfills your resume',
-              //   style: kSubtitleStyle(
-              //     context,
-              //     fontWeight: FontWeight.w400,
-              //   ),
-              // ),
               height20,
               MaterialButton(
                 onPressed: () {
@@ -70,7 +55,6 @@ class _WelcomeUIState extends State<WelcomeUI> {
                   ),
                 ),
               ),
-              height20,
             ],
           ),
         ),
