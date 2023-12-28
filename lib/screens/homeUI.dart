@@ -101,12 +101,13 @@ class _HomeUIState extends State<HomeUI> {
                     onRefresh: pullRefresher,
                     child: vacancyList.length == 0
                         ? Center(
-                            child: Image.asset("assets/images/no-data.jpg"))
+                            child: Image.asset("assets/images/no-data.jpg"),
+                          )
                         : ListView.builder(
                             controller: scrollController,
                             itemCount: vacancyList.length,
                             shrinkWrap: true,
-                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            padding: EdgeInsets.fromLTRB(15, 10, 15, 20),
                             physics: AlwaysScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               return JobCard(data: vacancyList[index]);
@@ -114,7 +115,6 @@ class _HomeUIState extends State<HomeUI> {
                           ),
                   ),
                 ),
-                kHeight(20)
               ],
             ),
             isLoading ? fullScreenLoading(context) : SizedBox(),
@@ -126,76 +126,80 @@ class _HomeUIState extends State<HomeUI> {
 
   Widget _hero(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: isNavOpen,
-        builder: (context, isOpen, _) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                color: Color(0xFFDEE1FB),
-                child: SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      height10,
-                      AnimatedContainer(
-                        height: isOpen ? 40 : 0,
-                        duration: Duration(milliseconds: 200),
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          'Find a job',
-                          style: kTitleStyle(context, color: Colors.black),
-                        ),
-                      ),
-                      _searchBar(),
-                      height15,
-                    ],
-                  ),
-                ),
-              ),
-              height10,
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
+      valueListenable: isNavOpen,
+      builder: (context, isOpen, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              color: Color(0xFFDEE1FB),
+              child: SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      alignment: WrapAlignment.start,
-                      runAlignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 10,
-                      children: [
-                        Text(
-                          'Filters: ',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
-                            fontSize: sdp(context, 10),
-                          ),
-                        ),
-                        homePill(label: userData['roleTitle']),
-                        homePill(
-                            label:
-                                (city.text.isEmpty ? 'Anywhere' : city.text) +
-                                    ', ' +
-                                    selectedState),
-                        selectedDistanceRange == ''
-                            ? SizedBox.shrink()
-                            : homePill(label: selectedDistanceRange + ' km'),
-                      ],
-                    ),
                     height10,
-                    Text(
-                      'Personalised job profiles',
-                      style: kSubtitleStyle(context, color: Colors.black),
+                    AnimatedContainer(
+                      height: isOpen ? 40 : 0,
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        'Find a job',
+                        style: kTitleStyle(context, color: Colors.black),
+                      ),
                     ),
+                    _searchBar(),
+                    height15,
                   ],
                 ),
-              )
-            ],
-          );
-        });
+              ),
+            ),
+            height10,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.start,
+                    runAlignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 10,
+                    children: [
+                      Text(
+                        'Filters: ',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
+                          fontSize: sdp(context, 10),
+                        ),
+                      ),
+                      homePill(label: userData['roleTitle']),
+                      homePill(
+                          label: (city.text.isEmpty ? 'Anywhere' : city.text) +
+                              ', ' +
+                              selectedState),
+                      selectedDistanceRange == ''
+                          ? SizedBox.shrink()
+                          : homePill(label: selectedDistanceRange + ' km'),
+                    ],
+                  ),
+                  height10,
+                  Text(
+                    'Personalised job profiles',
+                    style: kSubtitleStyle(
+                      context,
+                      color: Colors.black,
+                      fontSize: sdp(context, 10),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _searchBar() {

@@ -191,7 +191,9 @@ class _MyApplicationsUIState extends State<MyApplicationsUI> {
                 width10,
                 Expanded(
                   child: Text(
-                    data['resumeName'],
+                    data['optedResumeBuilder'] == 'true'
+                        ? 'Medilink Resume'
+                        : data['resumeName'],
                     style: TextStyle(
                       overflow: TextOverflow.ellipsis,
                       fontWeight: FontWeight.w400,

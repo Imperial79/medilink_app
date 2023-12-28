@@ -65,10 +65,11 @@ TextStyle kSubtitleStyle(
   BuildContext context, {
   Color? color,
   FontWeight? fontWeight,
+  double? fontSize,
 }) {
   return TextStyle(
     color: color ?? Colors.black,
-    fontSize: sdp(context, 12),
+    fontSize: fontSize ?? sdp(context, 12),
     fontWeight: fontWeight ?? FontWeight.w500,
   );
 }
@@ -290,6 +291,7 @@ Widget kTextField(
               readOnly: readOnly,
               cursorColor: kPrimaryColorAccent,
               style: TextStyle(
+                color: Colors.black,
                 fontWeight: FontWeight.w500,
               ),
               obscureText: obscureText,
@@ -395,7 +397,6 @@ Widget kPageHeader(
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      height20,
       Text(
         title,
         style: kTitleStyle(context),

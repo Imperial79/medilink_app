@@ -254,7 +254,8 @@ class _VacancyDetailUIState extends State<VacancyDetailUI> {
                     borderRadius: kRadius(100),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blue.shade700.withOpacity(0.2),
+                        color: kPrimaryColorAccentLighter.withOpacity(.6),
+                        // color: Colors.blue.shade700.withOpacity(0.2),
                         blurRadius: 200,
                         spreadRadius: 60,
                         offset: Offset(0, 10),

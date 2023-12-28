@@ -140,15 +140,17 @@ class _UploadResumeUIState extends State<UploadResumeUI> {
                   child: ElevatedButton(
                     onPressed: () async {
                       await _selectFile();
-                      showModalBottomSheet(
-                        context: context,
-                        showDragHandle: true,
-                        elevation: 0,
-                        isScrollControlled: true,
-                        builder: (context) {
-                          return _selectedResumeModal();
-                        },
-                      );
+                      if (_pickedFile != null) {
+                        showModalBottomSheet(
+                          context: context,
+                          showDragHandle: true,
+                          elevation: 0,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return _selectedResumeModal();
+                          },
+                        );
+                      }
                     },
                     child: SizedBox(
                       width: double.infinity,

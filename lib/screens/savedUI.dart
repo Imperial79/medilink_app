@@ -28,7 +28,6 @@ class _SavedUIState extends State<SavedUI> {
   _scrollListener() {
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
-      print("At bottom");
       pageNo += 1;
       fetchBookmarkedVacancies();
     }

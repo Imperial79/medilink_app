@@ -77,10 +77,15 @@ class _EditProfileUIState extends State<EditProfileUI> {
   }
 
   _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    _image = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {});
-    uploadDp();
+    try {
+      final ImagePicker picker = ImagePicker();
+      _image = await picker.pickImage(source: ImageSource.gallery);
+      setState(() {});
+      uploadDp();
+    } catch (e) {
+      kSnackBar(context,
+          content: "Invalid image. Try different", isDanger: true);
+    }
   }
 
   uploadDp() async {
